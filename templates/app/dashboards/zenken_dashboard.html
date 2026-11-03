@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Zenken Scholar Dashboard{% endblock %}
+
+{% block content %}
+<!-- Zenken Scholar Profile Header -->
+<div class="card mb-4 bg-primary text-white border-0 shadow">
+    <div class="card-body p-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-warning text-dark px-3 py-1 fw-bold">
+                        <i class="bi bi-patch-check-fill me-1"></i> Zenken Enrolled Scholar
+                    </span>
+                    <span class="badge bg-white text-primary fw-semibold">
+                        ID: {{ profile.zenken_id }}
+                    </span>
+                </div>
+                <h2 class="fw-bold mb-1">Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+                <p class="mb-0 text-white-50">
+                    <i class="bi bi-mortarboard me-1"></i> {{ profile.college_name }} &bull;
+                    <i class="bi bi-people me-1"></i> {{ profile.batch_name }} &bull;
+                    <i class="bi bi-translate me-1"></i> Level: <strong>{{ profile.get_japanese_level_display }}</strong>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="{% url 'app:question_list' %}" class="btn btn-light text-primary fw-bold shadow-sm">
+                    <i class="bi bi-play-circle-fill me-1"></i> Practice Aptitude
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stat Highlights -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-primary">
+            <div class="text-muted small">Total Questions Available</div>
+            <div class="fs-2 fw-bold text-dark">{{ total_questions_available }}</div>
+            <div class="text-muted small">Full library unlocked</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-danger">
+            <div class="text-muted small">Zenken Exclusive Problems</div>
+            <div class="fs-2 fw-bold text-danger">{{ exclusive_count }}</div>
+            <div class="text-danger small"><i class="bi bi-lock-fill me-1"></i>Available only for Zenken students</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-success">
+            <div class="text-muted small">Japanese Track Aptitude</div>
+            <div class="fs-2 fw-bold text-success">Active</div>
+            <div class="text-muted small">Placement-oriented syllabus</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Aptitude Question Stream -->
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-puzzle me-2 text-primary"></i>Quantitative Aptitude Questions</span>
+                <a href="{% url 'app:question_list' %}" class="btn btn-sm btn-outline-primary">Browse All</a>
+            </div>
+            <div class="card-body p-0">
+                {% if questions %}
+                    <div class="list-group list-group-flush">
+                        {% for q in questions %}
+                            <a href="{% url 'app:question_detail' q.pk %}" class="list-group-item list-group-item-action p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <h6 class="fw-bold mb-0 text-dark">{{ q.title }}</h6>
+                                    <div>
+                                        {% if q.access_tier == 'ZENKEN_ONLY' %}
+                                            <span class="badge bg-danger">Zenken Exclusive</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary-subtle text-secondary">General</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <p class="text-muted small mb-2 text-truncate">{{ q.question_text }}</p>
+                                <div class="d-flex gap-2">
+                                    <span class="badge bg-light text-dark border small">{{ q.get_topic_display }}</span>
+                                    <span class="badge bg-light text-dark border small">{{ q.get_difficulty_display }}</span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-journal-x fs-1 d-block mb-2"></i>
+                        No questions uploaded yet. Check back soon!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Academy & Zenken Updates -->
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-megaphone me-2 text-danger"></i>Academy & Batch Updates</span>
+                <a href="{% url 'app:update_list' %}" class="btn btn-sm btn-outline-danger">All Updates</a>
+            </div>
+            <div class="card-body p-3">
+                {% if updates %}
+                    <div class="list-group list-group-flush">
+                        {% for update in updates %}
+                            <div class="list-group-item px-0 py-3">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <h6 class="fw-bold mb-0 text-dark">
+                                        {% if update.is_pinned %}<i class="bi bi-pin-angle-fill text-danger me-1"></i>{% endif %}
+                                        {{ update.title }}
+                                    </h6>
+                                    {% if update.target_audience == 'ZENKEN_ONLY' %}
+                                        <span class="badge bg-danger-subtle text-danger small">Zenken Only</span>
+                                    {% endif %}
+                                </div>
+                                <span class="badge bg-light text-secondary border small mb-2">{{ update.get_category_display }}</span>
+                                <p class="text-muted small mb-1">{{ update.content|truncatewords:22 }}</p>
+                                <span class="text-secondary small" style="font-size: 0.75rem;">By {{ update.teacher.get_full_name|default:update.teacher.username }} &bull; {{ update.created_at|date:"M d, Y" }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+                        No announcements posted at this time.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

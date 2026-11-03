@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Academy Updates & Notices - Zenken Academy{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-7">
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-megaphone-fill text-primary me-2"></i>Academy Announcements & Updates
+        </h2>
+        <p class="text-muted mb-0">Official updates regarding batches, placement drives, workshops, and tests.</p>
+    </div>
+    {% if user.is_teacher %}
+        <div class="col-md-5 text-md-end mt-3 mt-md-0">
+            <a href="{% url 'app:update_create' %}" class="btn btn-success">
+                <i class="bi bi-plus-lg me-1"></i> Post New Update
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        {% if updates %}
+            {% for update in updates %}
+                <div class="card mb-4 shadow-sm {% if update.is_pinned %}border-danger border-2{% else %}border-0{% endif %}">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                {% if update.is_pinned %}
+                                    <span class="badge bg-danger mb-1"><i class="bi bi-pin-angle-fill me-1"></i> Pinned Announcement</span>
+                                {% endif %}
+                                <span class="badge bg-light text-dark border">{{ update.get_category_display }}</span>
+                                {% if update.target_audience == 'ZENKEN_ONLY' %}
+                                    <span class="badge bg-primary">Zenken Only</span>
+                                {% elif update.target_audience == 'NON_ZENKEN_ONLY' %}
+                                    <span class="badge bg-info text-dark">Non-Zenken Only</span>
+                                {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary">All Students</span>
+                                {% endif %}
+                            </div>
+                            {% if user.is_teacher and update.teacher == user or user.is_superuser %}
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light border-0 py-0" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="{% url 'app:update_edit' update.pk %}"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                        <li><a class="dropdown-item text-danger" href="{% url 'app:update_delete' update.pk %}"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <h4 class="fw-bold text-dark mt-2 mb-2">{{ update.title }}</h4>
+
+                        <p class="text-secondary fs-6 mb-3" style="white-space: pre-wrap; line-height: 1.6;">{{ update.content }}</p>
+
+                        <div class="pt-3 border-top d-flex justify-content-between align-items-center text-muted small">
+                            <span>
+                                <i class="bi bi-person-fill text-secondary me-1"></i>
+                                Posted by <strong>{{ update.teacher.get_full_name|default:update.teacher.username }}</strong>
+                                {% if update.teacher.teacher_profile %}
+                                    ({{ update.teacher.teacher_profile.department }})
+                                {% endif %}
+                            </span>
+                            <span>
+                                <i class="bi bi-clock me-1"></i>{{ update.created_at|date:"F d, Y, h:i A" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="card p-5 text-center text-muted shadow-sm border-0">
+                <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+                <h5>No academy announcements posted yet.</h5>
+                <p class="small mb-0">Check back later or check with your instructor.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
