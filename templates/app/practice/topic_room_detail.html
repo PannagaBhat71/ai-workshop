@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ topic_display }} - Topic Practice Room{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <a href="{% url 'app:topic_practice_rooms' %}" class="btn btn-outline-secondary btn-sm mb-2">
+            <i class="bi bi-arrow-left me-1"></i> Back to All Topic Rooms
+        </a>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-folder2-open text-primary me-2"></i>{{ topic_display }}
+        </h2>
+        <p class="text-muted mb-0">Topic Practice Room &bull; Showing {{ questions.count }} categorized questions.</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <span class="badge bg-primary px-3 py-2 fs-6">{{ questions.count }} Questions Loaded</span>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% if questions %}
+        {% for q in questions %}
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0 d-flex flex-column">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-light text-dark border small">Question #{{ forloop.counter }}</span>
+                            <div>
+                                {% if q.difficulty == 'EASY' %}
+                                    <span class="badge bg-success-subtle text-success">Easy</span>
+                                {% elif q.difficulty == 'MEDIUM' %}
+                                    <span class="badge bg-warning-subtle text-warning-emphasis">Medium</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger">Hard</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <h5 class="card-title fw-bold text-dark mt-1">
+                            <a href="{% url 'app:question_detail' q.pk %}" class="text-decoration-none text-dark">
+                                {{ q.title }}
+                            </a>
+                        </h5>
+
+                        <p class="card-text text-muted small flex-grow-1">
+                            {{ q.question_text|truncatewords:24 }}
+                        </p>
+
+                        <div class="pt-3 border-top mt-auto d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Aptitude Resource Bank</small>
+                            <a href="{% url 'app:question_detail' q.pk %}" class="btn btn-sm btn-arena">
+                                Solve Problem <i class="bi bi-play-circle ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+            <h5>No questions currently in this topic room.</h5>
+            <a href="{% url 'app:topic_practice_rooms' %}" class="btn btn-outline-dark btn-sm mt-2">Back to Topics</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -23,18 +23,22 @@ class UserLoginForm(StyledFormMixin, AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({
-            'placeholder': 'Enter your username',
+            'placeholder': 'Enter username / faculty name',
             'autofocus': True,
         })
         self.fields['password'].widget.attrs.update({
-            'placeholder': 'Enter your password',
+            'placeholder': 'Enter your password (or 2654 for teachers)',
         })
 
 
 class ZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'First Name'}))
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'Last Name'}))
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'student@example.com'}))
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'placeholder': 'name.branch26@sahyadri.edu.in'}),
+        help_text="Must be your official Sahyadri College email (@sahyadri.edu.in)."
+    )
     phone_number = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'placeholder': '+91 98765 43210'}))
 
     # Zenken profile fields
@@ -49,6 +53,7 @@ class ZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
         max_length=100,
         required=True,
         label="Batch / Program",
+        initial="Batch 2026 - Japan IT Placement Track",
         widget=forms.TextInput(attrs={'placeholder': 'e.g. Batch 2026 - Japan IT Placement Track'}),
     )
     japanese_level = forms.ChoiceField(
@@ -60,7 +65,8 @@ class ZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
         max_length=150,
         required=True,
         label="College / Institute Name",
-        widget=forms.TextInput(attrs={'placeholder': 'e.g. National Institute of Engineering'}),
+        initial="Sahyadri College of Engineering & Management",
+        widget=forms.TextInput(attrs={'placeholder': 'Sahyadri College of Engineering & Management'}),
     )
 
     class Meta(UserCreationForm.Meta):
@@ -76,6 +82,12 @@ class ZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
             'japanese_level',
             'college_name',
         )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip().lower()
+        if not email.endswith('@sahyadri.edu.in'):
+            raise forms.ValidationError("Official college email required: Email must strictly end with @sahyadri.edu.in")
+        return email
 
     def clean_zenken_id(self):
         zenken_id = self.cleaned_data.get('zenken_id', '').strip()
@@ -105,15 +117,20 @@ class ZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
 class NonZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'First Name'}))
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'Last Name'}))
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'student@example.com'}))
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'placeholder': 'name.branch26@sahyadri.edu.in'}),
+        help_text="Must be your official Sahyadri College email (@sahyadri.edu.in)."
+    )
     phone_number = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'placeholder': '+91 98765 43210'}))
 
     # Non-Zenken profile fields
     institution_name = forms.CharField(
         max_length=150,
         required=True,
-        label="College / University",
-        widget=forms.TextInput(attrs={'placeholder': 'e.g. Bangalore Institute of Technology'}),
+        label="College / Institution",
+        initial="Sahyadri College of Engineering & Management",
+        widget=forms.TextInput(attrs={'placeholder': 'Sahyadri College of Engineering & Management'}),
     )
     target_exam_or_goal = forms.CharField(
         max_length=150,
@@ -124,6 +141,7 @@ class NonZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
     graduation_year = forms.IntegerField(
         required=False,
         label="Graduation Year",
+        initial=2026,
         widget=forms.NumberInput(attrs={'placeholder': '2026'}),
     )
 
@@ -139,6 +157,12 @@ class NonZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
             'target_exam_or_goal',
             'graduation_year',
         )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip().lower()
+        if not email.endswith('@sahyadri.edu.in'):
+            raise forms.ValidationError("Official college email required: Email must strictly end with @sahyadri.edu.in")
+        return email
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -156,76 +180,3 @@ class NonZenkenStudentSignUpForm(StyledFormMixin, UserCreationForm):
                 graduation_year=self.cleaned_data.get('graduation_year'),
             )
         return user
-
-
-class TeacherSignUpForm(StyledFormMixin, UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'First Name'}))
-    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'Last Name'}))
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'teacher@zenken-academy.com'}))
-    phone_number = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'placeholder': '+91 98765 43210'}))
-
-    # Teacher profile fields
-    employee_id = forms.CharField(
-        max_length=50,
-        required=True,
-        label="Teacher / Employee ID",
-        widget=forms.TextInput(attrs={'placeholder': 'e.g. TCH-QA-2026'}),
-    )
-    department = forms.CharField(
-        max_length=100,
-        required=True,
-        label="Department / Subject",
-        initial="Quantitative Aptitude & Placement Training",
-        widget=forms.TextInput(attrs={'placeholder': 'e.g. Quantitative Aptitude & Reasoning'}),
-    )
-    qualification = forms.CharField(
-        max_length=150,
-        required=False,
-        label="Highest Qualification",
-        widget=forms.TextInput(attrs={'placeholder': 'e.g. M.Tech / M.Sc Mathematics / CAT 99.8%ile'}),
-    )
-    bio = forms.CharField(
-        required=False,
-        label="Bio / Subject Summary",
-        widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Brief intro about your teaching focus and aptitude syllabus...'}),
-    )
-
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = (
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-            'phone_number',
-            'employee_id',
-            'department',
-            'qualification',
-            'bio',
-        )
-
-    def clean_employee_id(self):
-        employee_id = self.cleaned_data.get('employee_id', '').strip()
-        if TeacherProfile.objects.filter(employee_id__iexact=employee_id).exists():
-            raise forms.ValidationError("This Employee ID is already registered.")
-        return employee_id
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.role = User.Role.TEACHER
-        user.is_staff = True  # Allows teachers staff access if desired
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.email = self.cleaned_data['email']
-        user.phone_number = self.cleaned_data.get('phone_number', '')
-        if commit:
-            user.save()
-            TeacherProfile.objects.create(
-                user=user,
-                employee_id=self.cleaned_data['employee_id'],
-                department=self.cleaned_data['department'],
-                qualification=self.cleaned_data.get('qualification', ''),
-                bio=self.cleaned_data.get('bio', ''),
-            )
-        return user
-

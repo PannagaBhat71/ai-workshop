@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - scemquiz.arena{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header p-4 bg-white border-bottom">
+                <span class="badge bg-success mb-2 px-3 py-1">Teacher Control Room</span>
+                <h3 class="fw-bold mb-1">{{ title }}</h3>
+                <p class="text-muted small mb-0">Configure quiz duration, select questions from the bank, and schedule live availability.</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Quiz Title <span class="text-danger">*</span></label>
+                        {{ form.title }}
+                        {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Quiz Category / Type <span class="text-danger">*</span></label>
+                            {{ form.quiz_type }}
+                            {% if form.quiz_type.errors %}<div class="text-danger small">{{ form.quiz_type.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Target Audience <span class="text-danger">*</span></label>
+                            {{ form.target_audience }}
+                            {% if form.target_audience.errors %}<div class="text-danger small">{{ form.target_audience.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Duration (Minutes) <span class="text-danger">*</span></label>
+                            {{ form.duration_minutes }}
+                            {% if form.duration_minutes.errors %}<div class="text-danger small">{{ form.duration_minutes.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Passing Score (%) <span class="text-danger">*</span></label>
+                            {{ form.pass_percentage }}
+                            {% if form.pass_percentage.errors %}<div class="text-danger small">{{ form.pass_percentage.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Scheduled Start Date &amp; Time (Optional)</label>
+                            {{ form.scheduled_start_time }}
+                            <div class="form-text small">Leave blank to make active immediately.</div>
+                            {% if form.scheduled_start_time.errors %}<div class="text-danger small">{{ form.scheduled_start_time.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Scheduled Closing Date &amp; Time (Optional)</label>
+                            {{ form.scheduled_end_time }}
+                            <div class="form-text small">Leave blank for open-ended test.</div>
+                            {% if form.scheduled_end_time.errors %}<div class="text-danger small">{{ form.scheduled_end_time.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        {{ form.is_published }}
+                        <label class="form-check-label fw-semibold ms-2" for="{{ form.is_published.id_for_label }}">
+                            Publish &amp; Post Quiz Now (Visible to Students)
+                        </label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Instructions &amp; Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}<div class="text-danger small">{{ form.description.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Select Questions to Include <span class="text-danger">*</span></label>
+                        {{ form.questions }}
+                        <div class="form-text small text-muted">{{ form.questions.help_text }}</div>
+                        {% if form.questions.errors %}<div class="text-danger small">{{ form.questions.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{% url 'app:quiz_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-arena px-4">
+                            <i class="bi bi-calendar-check me-1"></i> {{ btn_text }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

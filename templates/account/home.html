@@ -1,25 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}Welcome to Zenken Academy & Aptitude Portal{% endblock %}
+{% block title %}Welcome to scemquiz.arena &bull; Quantitative &amp; Japanese Aptitude Arena{% endblock %}
 
 {% block content %}
 <div class="row align-items-center mb-5 py-4">
-    <div class="col-lg-8 mx-auto text-center">
-        <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-semibold mb-3">
-            <i class="bi bi-mortarboard-fill me-1"></i> Specialized Multi-Role Academy Portal
+    <div class="col-lg-9 mx-auto text-center">
+        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-bold mb-3 border border-primary-subtle">
+            <i class="bi bi-cpu-fill me-1"></i> Interactive Examination &amp; Practice Arena
         </span>
-        <h1 class="display-5 fw-bold text-dark mb-3">
-            Quantitative Aptitude & Updates Hub
+        <h1 class="display-4 fw-bold text-dark mb-3">
+            Welcome to <span class="brand-scem" style="color: #0f172a;">scemquiz</span><span class="brand-dot">.</span><span class="brand-arena">arena</span>
         </h1>
         <p class="lead text-muted mb-4">
-            A comprehensive platform connecting <strong>Zenken enrolled scholars</strong>, <strong>aspirant students</strong>, and <strong>expert teachers</strong> to master quantitative problem solving and stay ahead with academy announcements.
+            A high-performance portal powering <strong>Quantitative Aptitude</strong> for aspiring engineers and <strong>Japanese Language &amp; Placement Tracks</strong> exclusively for Zenken Scholars. Featuring automated voice-dictated question generation and scheduled testing.
         </p>
         <div class="d-flex justify-content-center gap-3">
-            <a href="{% url 'account:register_select' %}" class="btn btn-zenken btn-lg px-4 shadow-sm">
-                <i class="bi bi-person-plus me-2"></i>Create an Account
+            <a href="{% url 'account:register_select' %}" class="btn btn-arena btn-lg px-4 shadow">
+                <i class="bi bi-person-plus-fill me-2"></i> Join the Arena
             </a>
             <a href="{% url 'account:login' %}" class="btn btn-outline-dark btn-lg px-4">
-                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
             </a>
         </div>
     </div>
@@ -27,29 +27,29 @@
 
 <div class="row g-4 mb-5">
     <div class="col-12 text-center mb-2">
-        <h3 class="fw-bold">Three Tailored Account Portals</h3>
-        <p class="text-muted">Choose your profile type to register and unlock dedicated features</p>
+        <h3 class="fw-bold">Three Specialized Access Tracks</h3>
+        <p class="text-muted">Designed for Zenken scholars, competitive engineering students, and faculty mentors</p>
     </div>
 
     <!-- Account 1: Zenken Enrolled Students -->
     <div class="col-md-4">
-        <div class="card h-100 border-primary border-2 shadow-sm">
+        <div class="card h-100 border-2 border-danger shadow-sm">
             <div class="card-body p-4 text-center d-flex flex-column">
-                <div class="mx-auto mb-3 text-primary">
-                    <i class="bi bi-award fs-1"></i>
+                <div class="mx-auto mb-3 text-danger">
+                    <i class="bi bi-award-fill fs-1"></i>
                 </div>
-                <span class="badge bg-primary text-white mx-auto mb-2 px-3 py-1">Enrolled Scholars</span>
+                <span class="badge badge-zenken-exclusive mx-auto mb-2 px-3 py-1">Enrolled Scholars</span>
                 <h4 class="card-title fw-bold">Zenken Enrolled Students</h4>
                 <p class="card-text text-muted small flex-grow-1">
-                    For students officially enrolled in Zenken's prestigious training programs. Access exclusive high-level aptitude questions, Japanese career updates, and track-specific notices.
+                    Complete access to both Japanese Language Question Sets (Kanji, JLPT Grammar, Vocabulary) and Quantitative Aptitude tests with company recruitment tracks.
                 </p>
                 <ul class="list-unstyled text-start small mb-4 text-secondary">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Official Zenken ID verification</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Exclusive Japanese IT aptitude test sets</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Private Zenken academy announcements</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i><strong>🇯🇵 Exclusive Japanese Quizzes</strong></li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i>Kanji &amp; Business Etiquette Practice Sets</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i>All Quantitative Aptitude Problem Sets</li>
                 </ul>
-                <a href="{% url 'account:register_zenken' %}" class="btn btn-primary w-100">
-                    Register as Zenken Student
+                <a href="{% url 'account:register_zenken' %}" class="btn btn-danger w-100">
+                    Register as Zenken Scholar
                 </a>
             </div>
         </div>
@@ -57,51 +57,50 @@
 
     <!-- Account 2: Non-Zenken Students -->
     <div class="col-md-4">
-        <div class="card h-100 border-info border-2 shadow-sm">
+        <div class="card h-100 border-2 border-info shadow-sm">
             <div class="card-body p-4 text-center d-flex flex-column">
                 <div class="mx-auto mb-3 text-info">
-                    <i class="bi bi-book-half fs-1"></i>
+                    <i class="bi bi-calculator-fill fs-1"></i>
                 </div>
                 <span class="badge bg-info-subtle text-info-emphasis mx-auto mb-2 px-3 py-1">Open Preparation</span>
                 <h4 class="card-title fw-bold">Non-Zenken Students</h4>
                 <p class="card-text text-muted small flex-grow-1">
-                    For external college students and job seekers preparing for quantitative aptitude, placement assessments, and national entrance exams.
+                    Focused exclusively on high-impact Quantitative Aptitude and Logical Reasoning for campus recruitment, technical assessments, and competitive exams.
                 </p>
                 <ul class="list-unstyled text-start small mb-4 text-secondary">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Public Quantitative Aptitude bank</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Interactive practice mode with explanations</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Open academy workshops & seminar alerts</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Full Quantitative Aptitude Bank</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Logical Reasoning &amp; Practice Arena</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Scheduled Aptitude Assessment Quizzes</li>
                 </ul>
                 <a href="{% url 'account:register_non_zenken' %}" class="btn btn-outline-info text-dark w-100">
-                    Register as External Student
+                    Register as Student
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Account 3: Teachers -->
+    <!-- Account 3: Teachers / Superusers -->
     <div class="col-md-4">
-        <div class="card h-100 border-success border-2 shadow-sm">
+        <div class="card h-100 border-2 border-success shadow-sm">
             <div class="card-body p-4 text-center d-flex flex-column">
                 <div class="mx-auto mb-3 text-success">
-                    <i class="bi bi-person-workspace fs-1"></i>
+                    <i class="bi bi-mortarboard-fill fs-1"></i>
                 </div>
-                <span class="badge bg-success text-white mx-auto mb-2 px-3 py-1">Instructors & Mentors</span>
+                <span class="badge bg-success text-white mx-auto mb-2 px-3 py-1">Faculty &amp; Superuser</span>
                 <h4 class="card-title fw-bold">Academy Teachers</h4>
                 <p class="card-text text-muted small flex-grow-1">
-                    For academy instructors and aptitude mentors to author, upload, and curate quantitative aptitude questions, mock series, and broadcast academy updates.
+                    Full faculty superuser privileges: review student test activities, schedule &amp; post quizzes, and dictate questions with automated AI option generator.
                 </p>
                 <ul class="list-unstyled text-start small mb-4 text-secondary">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Author & publish quantitative questions</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Control Zenken vs Open access tiers</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Broadcast pinned academy announcements</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>🎙️ Voice Dictation Question Creator</strong></li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>📊 Review All Student Submissions</strong></li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Schedule &amp; Post Timed Quizzes</li>
                 </ul>
                 <a href="{% url 'account:register_teacher' %}" class="btn btn-success w-100">
-                    Register as Teacher
+                    Join as Teacher (Pass: 2654)
                 </a>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Scheduled &amp; Live Quizzes - scemquiz.arena{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-stopwatch-fill text-danger me-2"></i>Scheduled &amp; Live Quizzes
+        </h2>
+        <p class="text-muted mb-0">Participate in timed assessment series for Quantitative Aptitude and Japanese Language.</p>
+    </div>
+    {% if user.is_teacher %}
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a href="{% url 'app:quiz_create' %}" class="btn btn-arena">
+                <i class="bi bi-calendar-plus me-1"></i> Schedule &amp; Post Quiz
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    {% if quizzes %}
+        {% for quiz in quizzes %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 d-flex flex-column">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            {% if quiz.quiz_type == 'JAPANESE' %}
+                                <span class="badge badge-zenken-exclusive">🇯🇵 Japanese Quiz</span>
+                            {% else %}
+                                <span class="badge bg-primary-subtle text-primary border">Aptitude Quiz</span>
+                            {% endif %}
+
+                            {% if quiz.is_live %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                    <i class="bi bi-broadcast me-1"></i> Live
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary">Scheduled</span>
+                            {% endif %}
+                        </div>
+
+                        <h5 class="card-title fw-bold text-dark mt-1">
+                            <a href="{% url 'app:quiz_detail' quiz.pk %}" class="text-decoration-none text-dark">
+                                {{ quiz.title }}
+                            </a>
+                        </h5>
+
+                        <p class="card-text text-muted small flex-grow-1">
+                            {{ quiz.description|truncatewords:20|default:"Timed test assessment evaluating accuracy and speed under test conditions." }}
+                        </p>
+
+                        <div class="bg-light p-3 rounded-3 mb-3 small">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted"><i class="bi bi-clock me-1"></i>Duration:</span>
+                                <strong>{{ quiz.duration_minutes }} Minutes</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted"><i class="bi bi-question-circle me-1"></i>Questions:</span>
+                                <strong>{{ quiz.questions.count }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted"><i class="bi bi-award me-1"></i>Pass Mark:</span>
+                                <strong>{{ quiz.pass_percentage }}%</strong>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">By {{ quiz.teacher.get_full_name|default:quiz.teacher.username }}</span>
+                            <a href="{% url 'app:quiz_detail' quiz.pk %}" class="btn btn-sm btn-dark">
+                                View Details <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-calendar-x fs-1 text-muted d-block mb-2"></i>
+            <h5 class="text-muted">No quizzes scheduled or live right now.</h5>
+            {% if user.is_teacher %}
+                <a href="{% url 'app:quiz_create' %}" class="btn btn-arena btn-sm mt-2">Schedule First Quiz</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

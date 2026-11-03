@@ -1,19 +1,99 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ title }} - Zenken Academy{% endblock %}
+{% block title %}{{ title }} - scemquiz.arena{% endblock %}
+
+{% block extra_head %}
+<style>
+    .voice-control-box {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        border: 2px solid #6366f1;
+        border-radius: 16px;
+        color: white;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .mic-btn-active {
+        background: #ef4444 !important;
+        animation: pulse-mic 1.2s infinite ease-in-out;
+        box-shadow: 0 0 25px rgba(239, 68, 68, 0.7);
+    }
+    @keyframes pulse-mic {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+    }
+    .transcript-box {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px dashed rgba(255, 255, 255, 0.25);
+        border-radius: 10px;
+        min-height: 52px;
+        padding: 10px 14px;
+        font-family: monospace;
+        color: #a5f3fc;
+        font-size: 0.95rem;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-header p-4 bg-white">
-                <span class="badge bg-success mb-2 px-3 py-1">Teacher Portal</span>
+    <div class="col-lg-9">
+
+        <!-- VOICE DICTATION WIDGET -->
+        <div class="voice-control-box mb-4 shadow">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+                <div>
+                    <h5 class="fw-bold mb-1 text-white d-flex align-items-center gap-2">
+                        <i class="bi bi-mic-fill text-danger fs-4"></i> Voice Dictation &amp; Smart Question Generator
+                    </h5>
+                    <p class="text-white-50 small mb-0">
+                        Speak your question into your microphone. The AI will parse it, automatically generate plausible options (A, B, C, D), select the correct answer, and create a full solution!
+                    </p>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                    <select id="voiceLang" class="form-select form-select-sm bg-dark text-white border-secondary" style="width: 140px;">
+                        <option value="en-US">English (US)</option>
+                        <option value="en-IN">English (India)</option>
+                        <option value="ja-JP">Japanese (日本語)</option>
+                    </select>
+                    <button type="button" id="startVoiceBtn" class="btn btn-danger btn-sm px-3 d-flex align-items-center gap-2 shadow">
+                        <i class="bi bi-mic-fill fs-6" id="micIcon"></i>
+                        <span id="micBtnText">Start Dictating</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Speech Status & Transcript -->
+            <div class="mb-2">
+                <div class="d-flex justify-content-between small text-white-50 mb-1">
+                    <span id="speechStatus">Microphone ready. Click "Start Dictating" and speak clearly.</span>
+                    <span id="interimIndicator" class="badge bg-warning text-dark d-none">Listening...</span>
+                </div>
+                <div id="transcriptDisplay" class="transcript-box">
+                    <em>Your spoken text will appear here in real-time...</em>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-2">
+                <button type="button" id="autoGenerateBtn" class="btn btn-warning btn-sm fw-bold">
+                    <i class="bi bi-magic me-1"></i> Auto-Generate Options &amp; Solution
+                </button>
+                <button type="button" id="clearVoiceBtn" class="btn btn-outline-light btn-sm">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN QUESTION FORM -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header p-4 bg-white border-bottom">
+                <span class="badge bg-success mb-2 px-3 py-1">Faculty &amp; Superuser Mode</span>
                 <h3 class="fw-bold mb-1">{{ title }}</h3>
-                <p class="text-muted small mb-0">Create or revise a quantitative aptitude question and provide answer options with an explanation.</p>
+                <p class="text-muted small mb-0">Fill in the question details below or use the voice assistant above to populate them automatically.</p>
             </div>
 
             <div class="card-body p-4 p-md-5">
-                <form method="post" novalidate>
+                <form method="post" novalidate id="questionForm">
                     {% csrf_token %}
 
                     {% if form.non_field_errors %}
@@ -24,77 +104,105 @@
                         </div>
                     {% endif %}
 
+                    <!-- Subject & Access Controls -->
                     <div class="row g-3 mb-3">
-                        <div class="col-12">
-                            <label class="form-label fw-semibold">Question Title / Topic Concept <span class="text-danger">*</span></label>
-                            {{ form.title }}
-                            {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors }}</div>{% endif %}
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Question Domain / Subject <span class="text-danger">*</span></label>
+                            {{ form.subject }}
+                            <div class="form-text small">Select Japanese for Zenken Exclusive questions.</div>
+                            {% if form.subject.errors %}<div class="text-danger small">{{ form.subject.errors }}</div>{% endif %}
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">Aptitude Domain <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold">Topic / Category <span class="text-danger">*</span></label>
                             {{ form.topic }}
                             {% if form.topic.errors %}<div class="text-danger small">{{ form.topic.errors }}</div>{% endif %}
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">Difficulty Level <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold">Difficulty Level <span class="text-danger">*</span></label>
                             {{ form.difficulty }}
                             {% if form.difficulty.errors %}<div class="text-danger small">{{ form.difficulty.errors }}</div>{% endif %}
                         </div>
+                    </div>
 
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Question Title / Concept <span class="text-danger">*</span></label>
+                            {{ form.title }}
+                            {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors }}</div>{% endif %}
+                        </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">Access Tier <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold">Access Tier <span class="text-danger">*</span></label>
                             {{ form.access_tier }}
                             {% if form.access_tier.errors %}<div class="text-danger small">{{ form.access_tier.errors }}</div>{% endif %}
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Problem Statement <span class="text-danger">*</span></label>
+                    <!-- Problem Statement -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Problem Statement / Question Text <span class="text-danger">*</span></label>
                         {{ form.question_text }}
                         {% if form.question_text.errors %}<div class="text-danger small">{{ form.question_text.errors }}</div>{% endif %}
                     </div>
 
+                    <!-- Four Options -->
+                    <h5 class="fw-bold mb-3 text-secondary border-bottom pb-2">
+                        <i class="bi bi-list-check me-2"></i>Multiple Choice Options
+                    </h5>
+
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Option A <span class="text-danger">*</span></label>
-                            {{ form.option_a }}
-                            {% if form.option_a.errors %}<div class="text-danger small">{{ form.option_a.errors }}</div>{% endif %}
+                            <div class="p-3 bg-light rounded-3 border">
+                                <label class="form-label fw-bold text-primary">Option A <span class="text-danger">*</span></label>
+                                {{ form.option_a }}
+                                {% if form.option_a.errors %}<div class="text-danger small">{{ form.option_a.errors }}</div>{% endif %}
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Option B <span class="text-danger">*</span></label>
-                            {{ form.option_b }}
-                            {% if form.option_b.errors %}<div class="text-danger small">{{ form.option_b.errors }}</div>{% endif %}
+                            <div class="p-3 bg-light rounded-3 border">
+                                <label class="form-label fw-bold text-primary">Option B <span class="text-danger">*</span></label>
+                                {{ form.option_b }}
+                                {% if form.option_b.errors %}<div class="text-danger small">{{ form.option_b.errors }}</div>{% endif %}
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Option C <span class="text-danger">*</span></label>
-                            {{ form.option_c }}
-                            {% if form.option_c.errors %}<div class="text-danger small">{{ form.option_c.errors }}</div>{% endif %}
+                            <div class="p-3 bg-light rounded-3 border">
+                                <label class="form-label fw-bold text-primary">Option C <span class="text-danger">*</span></label>
+                                {{ form.option_c }}
+                                {% if form.option_c.errors %}<div class="text-danger small">{{ form.option_c.errors }}</div>{% endif %}
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Option D <span class="text-danger">*</span></label>
-                            {{ form.option_d }}
-                            {% if form.option_d.errors %}<div class="text-danger small">{{ form.option_d.errors }}</div>{% endif %}
+                            <div class="p-3 bg-light rounded-3 border">
+                                <label class="form-label fw-bold text-primary">Option D <span class="text-danger">*</span></label>
+                                {{ form.option_d }}
+                                {% if form.option_d.errors %}<div class="text-danger small">{{ form.option_d.errors }}</div>{% endif %}
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Correct Option <span class="text-danger">*</span></label>
-                        {{ form.correct_option }}
-                        {% if form.correct_option.errors %}<div class="text-danger small">{{ form.correct_option.errors }}</div>{% endif %}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-success">Correct Option <span class="text-danger">*</span></label>
+                            {{ form.correct_option }}
+                            {% if form.correct_option.errors %}<div class="text-danger small">{{ form.correct_option.errors }}</div>{% endif %}
+                        </div>
                     </div>
 
+                    <!-- Explanation -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Detailed Mathematical Explanation / Solution</label>
+                        <label class="form-label fw-bold">Step-by-Step Mathematical Explanation &amp; Shortcuts</label>
                         {{ form.explanation }}
                         {% if form.explanation.errors %}<div class="text-danger small">{{ form.explanation.errors }}</div>{% endif %}
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a href="{% url 'app:teacher_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="bi bi-cloud-arrow-up me-1"></i> {{ btn_text }}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{% url 'app:teacher_dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-arena px-4 py-2">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> {{ btn_text }}
                         </button>
                     </div>
                 </form>
@@ -104,3 +212,171 @@
 </div>
 {% endblock %}
 
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const startVoiceBtn = document.getElementById('startVoiceBtn');
+    const micIcon = document.getElementById('micIcon');
+    const micBtnText = document.getElementById('micBtnText');
+    const speechStatus = document.getElementById('speechStatus');
+    const interimIndicator = document.getElementById('interimIndicator');
+    const transcriptDisplay = document.getElementById('transcriptDisplay');
+    const voiceLang = document.getElementById('voiceLang');
+    const autoGenerateBtn = document.getElementById('autoGenerateBtn');
+    const clearVoiceBtn = document.getElementById('clearVoiceBtn');
+
+    // Form inputs
+    const titleInput = document.getElementById('id_title');
+    const qTextInput = document.getElementById('id_question_text');
+    const optAInput = document.getElementById('id_option_a');
+    const optBInput = document.getElementById('id_option_b');
+    const optCInput = document.getElementById('id_option_c');
+    const optDInput = document.getElementById('id_option_d');
+    const correctOptSelect = document.getElementById('id_correct_option');
+    const explInput = document.getElementById('id_explanation');
+    const subjectSelect = document.getElementById('id_subject');
+    const topicSelect = document.getElementById('id_topic');
+    const accessSelect = document.getElementById('id_access_tier');
+
+    // Auto-adjust access tier when subject changes
+    if (subjectSelect && accessSelect) {
+        subjectSelect.addEventListener('change', function () {
+            if (this.value === 'JAPANESE') {
+                accessSelect.value = 'ZENKEN_ONLY';
+            }
+        });
+    }
+
+    // Web Speech API
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isRecording = false;
+    let accumulatedText = "";
+
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onstart = function () {
+            isRecording = true;
+            startVoiceBtn.classList.add('mic-btn-active');
+            micBtnText.textContent = "Listening... (Click to Stop)";
+            speechStatus.textContent = "Recording active. Speak clearly...";
+            interimIndicator.classList.remove('d-none');
+        };
+
+        recognition.onresult = function (event) {
+            let interimTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    accumulatedText += event.results[i][0].transcript + ' ';
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+            const displayText = (accumulatedText + interimTranscript).trim();
+            transcriptDisplay.textContent = displayText || "Listening...";
+        };
+
+        recognition.onerror = function (event) {
+            console.error("Speech Recognition Error:", event.error);
+            speechStatus.textContent = "Microphone error: " + event.error + ". You can also type directly.";
+            stopListening();
+        };
+
+        recognition.onend = function () {
+            stopListening();
+        };
+
+        function startListening() {
+            accumulatedText = "";
+            recognition.lang = voiceLang.value;
+            recognition.start();
+        }
+
+        function stopListening() {
+            isRecording = false;
+            startVoiceBtn.classList.remove('mic-btn-active');
+            micBtnText.textContent = "Start Dictating";
+            speechStatus.textContent = "Dictation stopped. Click 'Auto-Generate Options & Solution' to populate fields.";
+            interimIndicator.classList.add('d-none');
+            try { recognition.stop(); } catch(e){}
+
+            // If we have text, automatically trigger generation
+            if (accumulatedText.trim().length > 5) {
+                generateOptionsFromText(accumulatedText.trim());
+            }
+        }
+
+        startVoiceBtn.addEventListener('click', function () {
+            if (!isRecording) {
+                startListening();
+            } else {
+                stopListening();
+            }
+        });
+    } else {
+        speechStatus.innerHTML = "<span class='text-warning'>Web Speech API not supported in this browser. Please use Chrome/Edge or type directly.</span>";
+        startVoiceBtn.disabled = true;
+    }
+
+    clearVoiceBtn.addEventListener('click', function () {
+        accumulatedText = "";
+        transcriptDisplay.innerHTML = "<em>Your spoken text will appear here in real-time...</em>";
+        speechStatus.textContent = "Cleared. Ready to dictate.";
+    });
+
+    autoGenerateBtn.addEventListener('click', function () {
+        const textToUse = accumulatedText.trim() || qTextInput.value.trim();
+        if (!textToUse) {
+            alert("Please dictate or type a question statement first!");
+            return;
+        }
+        generateOptionsFromText(textToUse);
+    });
+
+    function generateOptionsFromText(text) {
+        speechStatus.innerHTML = "<span class='spinner-border spinner-border-sm text-warning'></span> Analyzing question and generating options...";
+
+        fetch("{% url 'app:api_auto_generate_options' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ text: text })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                speechStatus.textContent = "Error: " + data.error;
+                return;
+            }
+
+            // Populate form fields automatically!
+            if (data.title && !titleInput.value) titleInput.value = data.title;
+            if (data.question_text) qTextInput.value = data.question_text;
+            if (data.option_a) optAInput.value = data.option_a;
+            if (data.option_b) optBInput.value = data.option_b;
+            if (data.option_c) optCInput.value = data.option_c;
+            if (data.option_d) optDInput.value = data.option_d;
+            if (data.correct_option) correctOptSelect.value = data.correct_option;
+            if (data.explanation) explInput.value = data.explanation;
+            if (data.subject && subjectSelect) subjectSelect.value = data.subject;
+            if (data.topic && topicSelect) topicSelect.value = data.topic;
+
+            if (data.subject === 'JAPANESE' && accessSelect) {
+                accessSelect.value = 'ZENKEN_ONLY';
+            }
+
+            speechStatus.innerHTML = "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Options & answer populated successfully! Review and click 'Publish Question'.</span>";
+        })
+        .catch(err => {
+            console.error(err);
+            speechStatus.textContent = "Error communicating with generator API.";
+        });
+    }
+});
+</script>
+{% endblock %}

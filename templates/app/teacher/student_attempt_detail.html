@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Attempt: {{ attempt.student.username }} - scemquiz.arena{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="{% url 'app:student_activities' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Student Activities
+            </a>
+            <span class="badge bg-light text-dark border">Attempt ID: #{{ attempt.id }}</span>
+        </div>
+
+        <!-- Student Submission Header Card -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            {% if attempt.student.is_zenken_student %}
+                                <span class="badge badge-zenken-exclusive">Zenken Enrolled Scholar</span>
+                            {% else %}
+                                <span class="badge bg-info text-dark">Non-Zenken Student</span>
+                            {% endif %}
+                            <span class="text-muted small">{{ attempt.completed_at|date:"F d, Y, h:i A" }}</span>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ attempt.student.get_full_name|default:attempt.student.username }}</h3>
+                        <p class="text-muted mb-0">Quiz: <strong>{{ attempt.quiz.title }}</strong> &bull; {{ attempt.quiz.get_quiz_type_display }}</p>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <div class="display-6 fw-bold {% if attempt.passed %}text-success{% else %}text-danger{% endif %}">
+                            {{ attempt.percentage }}%
+                        </div>
+                        <div>
+                            {% if attempt.passed %}
+                                <span class="badge bg-success px-3 py-1">PASSED (Target: &gt;={{ attempt.quiz.pass_percentage }}%)</span>
+                            {% else %}
+                                <span class="badge bg-danger px-3 py-1">FAILED (Target: &gt;={{ attempt.quiz.pass_percentage }}%)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Breakdown of Answers -->
+        <h5 class="fw-bold mb-3"><i class="bi bi-list-check me-2"></i>Question-by-Question Breakdown:</h5>
+
+        {% for q_id, data in attempt.answers_data.items %}
+            <div class="card mb-3 shadow-sm border-0 {% if data.is_correct %}border-start border-4 border-success{% else %}border-start border-4 border-danger{% endif %}">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="fw-bold mb-0 text-dark">{{ forloop.counter }}. {{ data.title }}</h6>
+                        {% if data.is_correct %}
+                            <span class="badge bg-success-subtle text-success"><i class="bi bi-check-lg me-1"></i>Correct</span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger"><i class="bi bi-x-lg me-1"></i>Incorrect</span>
+                        {% endif %}
+                    </div>
+                    <div class="row g-2 my-2 small">
+                        <div class="col-md-6">
+                            <span class="text-muted">Student Choice:</span>
+                            <span class="badge {% if data.is_correct %}bg-success{% else %}bg-danger{% endif %} ms-1">
+                                Option {{ data.chosen }}
+                            </span>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-muted">Correct Key:</span>
+                            <span class="badge bg-success ms-1">Option {{ data.correct }}</span>
+                        </div>
+                    </div>
+                    {% if data.explanation %}
+                        <div class="p-3 bg-light rounded text-muted small mt-2">
+                            <strong>Explanation:</strong> {{ data.explanation }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="card p-4 text-center text-muted">No itemized question log stored for this attempt.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

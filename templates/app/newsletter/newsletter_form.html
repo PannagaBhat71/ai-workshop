@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Publish Weekly Newsletter - scemquiz.arena{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white p-4 border-bottom">
+                <span class="badge bg-info text-dark mb-2 px-3 py-1">Placement Cell Publication</span>
+                <h3 class="fw-bold mb-1">Publish Weekly Placement Newsletter</h3>
+                <p class="text-muted small mb-0">Share weekly placement preparation tips, speed arithmetic shortcuts, and job-market skill demands.</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-9">
+                            <label class="form-label fw-bold">Newsletter Title <span class="text-danger">*</span></label>
+                            {{ form.title }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Issue Number <span class="text-danger">*</span></label>
+                            {{ form.issue_number }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Weekly Editorial / Main Content <span class="text-danger">*</span></label>
+                        {{ form.content }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-success">Placement Preparation Strategies <span class="text-danger">*</span></label>
+                        {{ form.placement_strategies }}
+                        <div class="form-text small">Include interview tips, speed calculation formulas, resume points.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-info-emphasis">Current Job-Market Requirements &amp; Hiring Demands <span class="text-danger">*</span></label>
+                        {{ form.job_market_requirements }}
+                        <div class="form-text small">Mention required tech stacks, Japanese recruitment trends, tier-1 company requirements.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{% url 'app:newsletter_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-info text-dark fw-bold px-4">
+                            <i class="bi bi-send-check me-1"></i> Publish Weekly Newsletter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

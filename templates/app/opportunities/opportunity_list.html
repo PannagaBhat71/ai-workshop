@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Career &amp; Placement Opportunities - scemquiz.arena{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <span class="badge bg-success-subtle text-success px-3 py-1 rounded-pill fw-bold mb-2 border border-success-subtle">
+            <i class="bi bi-briefcase me-1"></i> Official Hiring Drives &amp; Placement Links
+        </span>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-briefcase-fill text-success me-2"></i>Campus &amp; Global Placement Opportunities
+        </h2>
+        <p class="text-muted mb-0">Verified links to active recruitment drives, Japanese tech career tracks, and internships.</p>
+    </div>
+    {% if user.is_teacher %}
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a href="{% url 'app:opportunity_create' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle me-1"></i> Post New Opportunity Link
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    {% if opportunities %}
+        {% for opp in opportunities %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 d-flex flex-column">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            {% if opp.opportunity_type == 'JAPAN_DRIVE' %}
+                                <span class="badge badge-zenken-exclusive">🇯🇵 Japan Career Drive</span>
+                            {% elif opp.opportunity_type == 'INTERNSHIP' %}
+                                <span class="badge bg-warning-subtle text-warning-emphasis">Internship</span>
+                            {% else %}
+                                <span class="badge bg-success-subtle text-success">Full-Time</span>
+                            {% endif %}
+
+                            {% if opp.deadline %}
+                                <small class="text-danger fw-semibold">
+                                    <i class="bi bi-alarm me-1"></i>Deadline: {{ opp.deadline|date:"M d" }}
+                                </small>
+                            {% endif %}
+                        </div>
+
+                        <h4 class="fw-bold text-dark mt-1 mb-1">{{ opp.company_name }}</h4>
+                        <h6 class="text-primary fw-semibold mb-3">{{ opp.role_title }}</h6>
+
+                        <div class="bg-light p-3 rounded-3 mb-3 small">
+                            <div class="mb-1">
+                                <span class="text-muted"><i class="bi bi-geo-alt me-1"></i>Location:</span>
+                                <strong>{{ opp.location }}</strong>
+                            </div>
+                            <div>
+                                <span class="text-muted"><i class="bi bi-patch-check me-1"></i>Eligibility:</span>
+                                <strong>{{ opp.eligibility }}</strong>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small flex-grow-1 mb-3">
+                            {{ opp.description|truncatewords:22 }}
+                        </p>
+
+                        <div class="pt-3 border-top mt-auto d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Posted {{ opp.created_at|date:"M d" }}</small>
+                            <a href="{{ opp.apply_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-dark px-3">
+                                Apply Now <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+            <h5>No placement opportunities posted right now. Check back soon!</h5>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

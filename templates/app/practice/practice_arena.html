@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}Practice Arena - scemquiz.arena{% endblock %}
+
+{% block extra_head %}
+<style>
+    .set-pill-active {
+        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%) !important;
+        color: white !important;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-semibold mb-2">
+            <i class="bi bi-crosshair me-1"></i> Interactive Skill Practice
+        </span>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-grid-fill text-primary me-2"></i>Practice Arena: Question Sets
+        </h2>
+        <p class="text-muted mb-0">Select your focus area: Quantitative Aptitude, Logical Reasoning, or Japanese Language (Zenken Exclusive).</p>
+    </div>
+    {% if user.is_teacher %}
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a href="{% url 'app:question_create' %}" class="btn btn-danger">
+                <i class="bi bi-mic-fill me-1"></i> Dictate New Question
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Category Set Selector Tabs -->
+<div class="card p-3 mb-4 shadow-sm border-0">
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        <span class="fw-bold text-secondary me-2 small">SELECT SET:</span>
+        <a href="{% url 'app:practice_arena' %}?set=all" class="btn btn-sm btn-outline-dark {% if selected_set == 'all' %}set-pill-active{% endif %}">
+            <i class="bi bi-collection me-1"></i> All Sets ({{ counts.all }})
+        </a>
+        <a href="{% url 'app:practice_arena' %}?set=aptitude" class="btn btn-sm btn-outline-primary {% if selected_set == 'aptitude' %}set-pill-active{% endif %}">
+            <i class="bi bi-calculator me-1"></i> Quantitative Aptitude
+        </a>
+        <a href="{% url 'app:practice_arena' %}?set=reasoning" class="btn btn-sm btn-outline-info text-dark {% if selected_set == 'reasoning' %}set-pill-active{% endif %}">
+            <i class="bi bi-diagram-3 me-1"></i> Logical Reasoning
+        </a>
+        <a href="{% url 'app:practice_arena' %}?set=work_time" class="btn btn-sm btn-outline-secondary {% if selected_set == 'work_time' %}set-pill-active{% endif %}">
+            <i class="bi bi-clock me-1"></i> Time &amp; Work
+        </a>
+        <a href="{% url 'app:practice_arena' %}?set=speed_distance" class="btn btn-sm btn-outline-secondary {% if selected_set == 'speed_distance' %}set-pill-active{% endif %}">
+            <i class="bi bi-speedometer me-1"></i> Speed &amp; Distance
+        </a>
+
+        {% if is_zenken_or_teacher %}
+            <a href="{% url 'app:practice_arena' %}?set=japanese" class="btn btn-sm btn-danger {% if selected_set == 'japanese' %}set-pill-active{% endif %}">
+                <i class="bi bi-translate me-1"></i> 🇯🇵 Japanese Sets (Zenken Exclusive)
+            </a>
+            <a href="{% url 'app:practice_arena' %}?set=kanji" class="btn btn-sm btn-outline-danger {% if selected_set == 'kanji' %}set-pill-active{% endif %}">
+                漢字 Kanji Set
+            </a>
+            <a href="{% url 'app:practice_arena' %}?set=grammar" class="btn btn-sm btn-outline-danger {% if selected_set == 'grammar' %}set-pill-active{% endif %}">
+                文法 JLPT Grammar
+            </a>
+        {% else %}
+            <span class="badge bg-secondary-subtle text-secondary py-2 px-3 small" title="Enroll in Zenken to unlock Japanese practice sets">
+                <i class="bi bi-lock-fill text-danger me-1"></i> Japanese Sets (Zenken Exclusive)
+            </span>
+        {% endif %}
+    </div>
+
+    <hr class="my-3">
+
+    <!-- Secondary Filter Bar -->
+    <form method="get" class="row g-2 align-items-center">
+        <input type="hidden" name="set" value="{{ selected_set }}">
+        <div class="col-md-6">
+            <input type="text" name="q" class="form-control form-control-sm" placeholder="Search keywords in this set..." value="{{ search_query }}">
+        </div>
+        <div class="col-md-4">
+            <select name="difficulty" class="form-select form-select-sm">
+                <option value="">All Difficulty Levels</option>
+                <option value="EASY" {% if selected_difficulty == 'EASY' %}selected{% endif %}>Easy</option>
+                <option value="MEDIUM" {% if selected_difficulty == 'MEDIUM' %}selected{% endif %}>Medium</option>
+                <option value="HARD" {% if selected_difficulty == 'HARD' %}selected{% endif %}>Hard / Advanced</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-dark btn-sm">Filter</button>
+        </div>
+    </form>
+</div>
+
+<!-- Questions Grid -->
+<div class="row g-4">
+    {% if questions %}
+        {% for q in questions %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 d-flex flex-column">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            {% if q.subject == 'JAPANESE' %}
+                                <span class="badge badge-zenken-exclusive">🇯🇵 Japanese Set</span>
+                            {% else %}
+                                <span class="badge bg-primary-subtle text-primary border">Aptitude</span>
+                            {% endif %}
+
+                            <div>
+                                {% if q.difficulty == 'EASY' %}
+                                    <span class="badge bg-success-subtle text-success">Easy</span>
+                                {% elif q.difficulty == 'MEDIUM' %}
+                                    <span class="badge bg-warning-subtle text-warning-emphasis">Medium</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger">Hard</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <h5 class="card-title fw-bold text-dark mt-1">
+                            <a href="{% url 'app:question_detail' q.pk %}" class="text-decoration-none text-dark">
+                                {{ q.title }}
+                            </a>
+                        </h5>
+
+                        <p class="card-text text-muted small flex-grow-1">
+                            {{ q.question_text|truncatewords:20 }}
+                        </p>
+
+                        <div class="pt-3 border-top mt-auto d-flex justify-content-between align-items-center">
+                            <span class="badge bg-light text-secondary border small">{{ q.get_topic_display }}</span>
+                            <a href="{% url 'app:question_detail' q.pk %}" class="btn btn-sm btn-arena">
+                                Practice <i class="bi bi-play-circle ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+            <h5 class="text-muted">No questions found in this set matching your criteria.</h5>
+            <a href="{% url 'app:practice_arena' %}" class="btn btn-outline-dark btn-sm mt-2">Reset Filters</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

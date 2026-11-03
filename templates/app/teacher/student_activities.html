@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Student Activities - scemquiz.arena{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <span class="badge bg-success px-3 py-1 mb-2">Faculty Superuser Portal</span>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-people-fill text-success me-2"></i>Review Student Activities &amp; Performance
+        </h2>
+        <p class="text-muted mb-0">Monitor test scores, quiz submissions, accuracy, and practice question logs across Zenken and open cohorts.</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="{% url 'app:quiz_create' %}" class="btn btn-primary btn-sm me-2">
+            <i class="bi bi-calendar-plus me-1"></i> Schedule Quiz
+        </a>
+        <a href="{% url 'app:teacher_dashboard' %}" class="btn btn-outline-dark btn-sm">
+            Teacher Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- Key Performance Metrics -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-primary">
+            <div class="text-muted small">Total Quiz Submissions</div>
+            <div class="fs-2 fw-bold text-dark">{{ total_attempts_count }}</div>
+            <div class="text-muted small">Recorded across all cohorts</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-success">
+            <div class="text-muted small">Overall Average Score</div>
+            <div class="fs-2 fw-bold text-success">{{ avg_score }}%</div>
+            <div class="text-muted small">Cohort test performance</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 border-start border-4 border-info">
+            <div class="text-muted small">Student Pass Rate</div>
+            <div class="fs-2 fw-bold text-info">{{ pass_rate }}%</div>
+            <div class="text-muted small">Passing criterion met</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters for Student Activities -->
+<div class="card p-3 mb-4 shadow-sm border-0">
+    <form method="get" class="row g-2 align-items-center">
+        <div class="col-md-4">
+            <input type="text" name="student" class="form-control" placeholder="Search student by username/name..." value="{{ student_query }}">
+        </div>
+        <div class="col-md-3">
+            <select name="quiz" class="form-select">
+                <option value="">All Quizzes</option>
+                {% for q in quizzes %}
+                    <option value="{{ q.id }}" {% if selected_quiz == q.id|stringformat:"s" %}selected{% endif %}>{{ q.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="role" class="form-select">
+                <option value="">All Student Cohorts</option>
+                <option value="ZENKEN_STUDENT" {% if selected_role == 'ZENKEN_STUDENT' %}selected{% endif %}>Zenken Enrolled Students</option>
+                <option value="NON_ZENKEN_STUDENT" {% if selected_role == 'NON_ZENKEN_STUDENT' %}selected{% endif %}>Non-Zenken Students</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-dark">Filter</button>
+        </div>
+    </form>
+</div>
+
+<!-- Submissions Table -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0"><i class="bi bi-file-earmark-check text-primary me-2"></i>Student Quiz Submissions</h5>
+        <span class="badge bg-light text-dark border">{{ attempts.count }} Attempt(s) Logged</span>
+    </div>
+    <div class="card-body p-0">
+        {% if attempts %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Student</th>
+                            <th>Cohort</th>
+                            <th>Quiz Attempted</th>
+                            <th>Score / Questions</th>
+                            <th>Percentage</th>
+                            <th>Result</th>
+                            <th>Time Taken</th>
+                            <th>Submitted On</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                            <tr>
+                                <td>
+                                    <strong>{{ attempt.student.get_full_name|default:attempt.student.username }}</strong>
+                                    <div class="text-muted small">@{{ attempt.student.username }}</div>
+                                </td>
+                                <td>
+                                    {% if attempt.student.is_zenken_student %}
+                                        <span class="badge badge-zenken-exclusive">Zenken</span>
+                                        {% if attempt.student.zenken_profile %}
+                                            <div class="small text-muted" style="font-size: 0.72rem;">{{ attempt.student.zenken_profile.zenken_id }}</div>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-info text-dark">Non-Zenken</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="fw-semibold">{{ attempt.quiz.title }}</span>
+                                    <div class="small text-secondary">{{ attempt.quiz.get_quiz_type_display }}</div>
+                                </td>
+                                <td>{{ attempt.score }} / {{ attempt.total_questions }}</td>
+                                <td>
+                                    <strong>{{ attempt.percentage }}%</strong>
+                                </td>
+                                <td>
+                                    {% if attempt.passed %}
+                                        <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle me-1"></i>Passed</span>
+                                    {% else %}
+                                        <span class="badge bg-danger-subtle text-danger"><i class="bi bi-x-circle me-1"></i>Failed</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ attempt.time_taken_seconds }}s</td>
+                                <td class="small text-muted">{{ attempt.completed_at|date:"M d, Y h:i A" }}</td>
+                                <td class="text-end">
+                                    <a href="{% url 'app:student_attempt_detail' attempt.pk %}" class="btn btn-sm btn-outline-dark">
+                                        Review <i class="bi bi-chevron-right ms-1"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-clipboard-x fs-1 d-block mb-2"></i>
+                No student quiz attempts match your filter.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Recent Standalone Practice Activity Logs -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+        <h5 class="fw-bold mb-0"><i class="bi bi-activity text-danger me-2"></i>Recent Student Question Practice Activity</h5>
+    </div>
+    <div class="card-body p-0">
+        {% if practice_logs %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Student</th>
+                            <th>Cohort</th>
+                            <th>Question Practiced</th>
+                            <th>Subject</th>
+                            <th>Chosen Option</th>
+                            <th>Evaluation</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in practice_logs %}
+                            <tr>
+                                <td><strong>{{ log.student.username }}</strong></td>
+                                <td>
+                                    {% if log.student.is_zenken_student %}
+                                        <span class="badge badge-zenken-exclusive">Zenken</span>
+                                    {% else %}
+                                        <span class="badge bg-info text-dark">Non-Zenken</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ log.question.title }}</td>
+                                <td>
+                                    {% if log.question.subject == 'JAPANESE' %}
+                                        <span class="badge badge-zenken-exclusive">🇯🇵 Japanese</span>
+                                    {% else %}
+                                        <span class="badge bg-primary-subtle text-primary border">Aptitude</span>
+                                    {% endif %}
+                                </td>
+                                <td><span class="badge bg-secondary">Option {{ log.chosen_option }}</span></td>
+                                <td>
+                                    {% if log.is_correct %}
+                                        <span class="badge bg-success">Correct</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Wrong</span>
+                                    {% endif %}
+                                </td>
+                                <td class="small text-muted">{{ log.timestamp|date:"M d, h:i A" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4 text-muted small">No recent practice activity logged yet.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

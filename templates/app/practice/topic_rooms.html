@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Topic-Wise Practice Rooms - scemquiz.arena{% endblock %}
+
+{% block extra_head %}
+<style>
+    .topic-card {
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .topic-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        border-color: #cbd5e1;
+    }
+    .topic-icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-bold mb-2 border border-primary-subtle">
+            <i class="bi bi-folder-check me-1"></i> Categorized Aptitude Resource Banks (1,200+ MCQs)
+        </span>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Topic-Wise Practice Rooms
+        </h2>
+        <p class="text-muted mb-0">Deep dive into specific aptitude syllabus modules. Each room contains structured questions with instant evaluation and solutions.</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="{% url 'app:quiz_list' %}" class="btn btn-outline-danger">
+            <i class="bi bi-stopwatch-fill me-1"></i> Try Full 20-Q Quiz
+        </a>
+    </div>
+</div>
+
+<!-- Section: Quantitative Aptitude Rooms -->
+<h4 class="fw-bold mb-3 text-dark d-flex align-items-center gap-2">
+    <i class="bi bi-calculator text-primary"></i> Quantitative Aptitude &amp; Reasoning Modules
+</h4>
+
+<div class="row g-4 mb-5">
+    {% for topic in aptitude_topics %}
+        <div class="col-md-6 col-lg-4">
+            <div class="topic-card p-4 shadow-sm">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div class="topic-icon-wrap bg-primary-subtle text-primary">
+                        <i class="bi {{ topic.icon }}"></i>
+                    </div>
+                    <span class="badge bg-light text-dark border px-3 py-2 fw-semibold">
+                        {{ topic.count }} Questions
+                    </span>
+                </div>
+
+                <h5 class="fw-bold mb-2 text-dark">{{ topic.name }}</h5>
+                <p class="text-muted small flex-grow-1 mb-4">{{ topic.desc }}</p>
+
+                <div class="pt-3 border-top mt-auto d-flex justify-content-between align-items-center">
+                    <span class="small text-secondary"><i class="bi bi-check-circle-fill text-success me-1"></i>Self-Paced</span>
+                    <a href="{% url 'app:topic_room_practice' topic.code %}" class="btn btn-sm btn-arena">
+                        Enter Room <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Section: Japanese Language Rooms (Zenken Exclusive) -->
+<div class="mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+            <span>🇯🇵</span> Japanese Language Practice Rooms (Zenken Exclusive)
+        </h4>
+        {% if not is_zenken %}
+            <span class="badge bg-danger text-white px-3 py-1">Locked for Open Track</span>
+        {% endif %}
+    </div>
+
+    {% if is_zenken %}
+        <div class="row g-4">
+            {% for jtopic in japanese_topics %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="topic-card p-4 shadow-sm border-danger-subtle">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="topic-icon-wrap bg-danger-subtle text-danger">
+                                <i class="bi {{ jtopic.icon }}"></i>
+                            </div>
+                            <span class="badge badge-zenken-exclusive px-2 py-1 small">
+                                {{ jtopic.count }} Qs
+                            </span>
+                        </div>
+
+                        <h5 class="fw-bold mb-2 text-dark">{{ jtopic.name }}</h5>
+                        <p class="text-muted small flex-grow-1 mb-4">{{ jtopic.desc }}</p>
+
+                        <div class="pt-3 border-top mt-auto text-end">
+                            <a href="{% url 'app:topic_room_practice' jtopic.code %}" class="btn btn-sm btn-danger w-100">
+                                Practice Japanese <i class="bi bi-translate ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card p-4 border-danger-subtle bg-light text-center shadow-sm">
+            <div class="fs-1 text-danger mb-2"><i class="bi bi-lock-fill"></i></div>
+            <h5 class="fw-bold text-dark">Japanese Language Rooms are Reserved for Zenken Scholars</h5>
+            <p class="text-muted small max-w-md mx-auto mb-3" style="max-width: 600px;">
+                Sahyadri students enrolled in the official Zenken Japan career recruitment program gain access to Japanese Kanji, JLPT Grammar, Vocabulary, and Business Culture practice sets.
+            </p>
+            <div>
+                <a href="{% url 'app:update_list' %}" class="btn btn-outline-danger btn-sm">Learn About Zenken Recruitment Track</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
