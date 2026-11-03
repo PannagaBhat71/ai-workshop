@@ -976,3 +976,100 @@ def update_list_view(request):
         updates = AcademyUpdate.objects.filter(Q(target_audience='ALL') | Q(target_audience='NON_ZENKEN_ONLY'))
 
     return render(request, 'app/updates/update_list.html', {'updates': updates})
+
+
+# ==============================================================================
+# INTERACTIVE AI TUTOR & CHATBOT (POWERED BY GROQ)
+# ==============================================================================
+
+import urllib.request
+from django.conf import settings
+
+
+@require_POST
+@login_required
+def chat_bot_api(request):
+    """
+    API endpoint: Interactive AI Tutor and Career Advisor powered by Groq.
+    Assists students with Aptitude shortcuts, Japanese explanations, placement tips,
+    and platform navigation.
+    """
+    try:
+        data = json.loads(request.body)
+        user_message = data.get('message', '').strip()
+        history = data.get('history', [])
+
+        if not user_message:
+            return JsonResponse({'error': 'Message cannot be empty'}, status=400)
+
+        api_key = getattr(settings, 'GROQ_API_KEY', '')
+        primary_model = getattr(settings, 'GROQ_MODEL', 'qwen/qwen3.8-27b')
+        fallback_models = getattr(settings, 'GROQ_FALLBACK_MODELS', ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'])
+
+        user = request.user
+        role_label = user.get_role_display()
+        is_zenken = user.is_zenken_student or user.is_teacher
+
+        system_prompt = (
+            "You are 'Arena AI Mentor', the official intelligent interactive tutor for scemquiz.arena at Sahyadri College of Engineering & Management. "
+            f"The user you are speaking with is {user.first_name or user.username} (Role: {role_label}). "
+            "Your core capabilities: "
+            "1. Aptitude Mastery: Solve quantitative problems step-by-step, give short mental-math tricks for Time & Work, Speed, Percentages, Algebra, and Geometry. "
+            "2. Japanese Language Mentor: For Zenken Scholars, explain Kanji readings (Onyomi/Kunyomi), JLPT N5/N4/N3 grammar particles, and Japanese corporate etiquette (Keigo). "
+            "3. Placement Strategy: Give actionable advice on technical interview rounds, resume building, and placement drives. "
+            "4. Platform Guide: Guide users to scemquiz.arena features like Leaderboards, Topic Practice Rooms (1,200+ MCQs), 20-Question Timed Quizzes, Opportunities, and Study Materials. "
+            "Tone: Inspiring, friendly, knowledgeable, and concise. Format math formulas cleanly using markdown bolding or bullet points."
+        )
+
+        messages_list = [{'role': 'system', 'content': system_prompt}]
+        for item in history[-6:]:
+            role = item.get('role', 'user')
+            content = item.get('content', '')
+            if role in ['user', 'assistant'] and content:
+                messages_list.append({'role': role, 'content': content})
+
+        messages_list.append({'role': 'user', 'content': user_message})
+
+        models_to_try = [primary_model] + fallback_models
+        last_error = None
+
+        for model in models_to_try:
+            try:
+                payload = {
+                    'model': model,
+                    'messages': messages_list,
+                    'max_tokens': 600,
+                    'temperature': 0.7,
+                }
+                req = urllib.request.Request(
+                    'https://api.groq.com/openai/v1/chat/completions',
+                    data=json.dumps(payload).encode('utf-8'),
+                    headers={
+                        'Authorization': f'Bearer {api_key}',
+                        'Content-Type': 'application/json',
+                        'User-Agent': 'scemquiz-arena/1.0 (Mozilla/5.0)'
+                    }
+                )
+                with urllib.request.urlopen(req, timeout=12) as response:
+                    res_json = json.loads(response.read().decode('utf-8'))
+                    bot_reply = res_json['choices'][0]['message']['content']
+                    return JsonResponse({'reply': bot_reply, 'model': model})
+            except Exception as e:
+                last_error = str(e)
+                continue
+
+        fallback_reply = (
+            f"Hello {user.first_name or user.username}! I am your Arena AI Mentor. "
+            "Here is a key aptitude tip: For Time & Work, combine work rates as 1/A + 1/B to easily solve combined days! "
+            "Check out our Topic-Wise Practice Rooms to test your skills."
+        )
+        return JsonResponse({'reply': fallback_reply, 'note': last_error})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def assistant_page_view(request):
+    """Full-page interactive AI tutor & mentor interface."""
+    return render(request, 'app/ai_tutor/assistant_page.html')

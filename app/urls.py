@@ -55,6 +55,10 @@ urlpatterns = [
     # Voice Dictation & Smart Options Generator API
     path('api/auto-generate-options/', views.auto_generate_options_api, name='api_auto_generate_options'),
 
+    # Interactive AI Tutor Chatbot (Groq API)
+    path('api/chat/', views.chat_bot_api, name='api_chat_bot'),
+    path('assistant/', views.assistant_page_view, name='assistant_page'),
+
     # Academy Updates
     path('updates/', views.update_list_view, name='update_list'),
     path('updates/create/', views.update_create_view, name='update_create'),
