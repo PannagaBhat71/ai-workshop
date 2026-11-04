@@ -16,6 +16,10 @@ ENV/
 # Staticfiles / Build artifacts
 staticfiles/
 
+# Media / Uploaded files
+media/
+study_materials/
+
 # IDE / Editor files
 .vscode/
 .idea/

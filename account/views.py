@@ -79,7 +79,7 @@ def user_login_view(request):
             login(request, user)
             messages.success(request, f"Welcome back, {user.first_name or user.username}!")
             return redirect('account:dashboard')
-        messages.error(request, "Invalid username or password. (Faculty: Enter name & password 2654).")
+        messages.error(request, "Invalid username or password.")
     else:
         form = UserLoginForm()
 

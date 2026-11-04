@@ -11,3 +11,4 @@ python manage.py migrate
 # Seed base question sets & demo users
 python manage.py load_aptitude_resource || true
 python manage.py seed_demo_data || true
+

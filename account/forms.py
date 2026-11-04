@@ -23,7 +23,7 @@ class UserLoginForm(StyledFormMixin, AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'placeholder': 'Username or faculty name', 'autofocus': True})
-        self.fields['password'].widget.attrs.update({'placeholder': 'Password (2654 for teachers)'})
+        self.fields['password'].widget.attrs.update({'placeholder': 'Password'})
 
 
 class BaseStudentSignUpForm(StyledFormMixin, UserCreationForm):
