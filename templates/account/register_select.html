@@ -1,78 +1,37 @@
 {% extends 'base.html' %}
 
-{% block title %}Student Enrollment Track - scemquiz.arena{% endblock %}
+{% block title %}Student Track Selection - scemquiz.arena{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-9">
-        <div class="text-center mb-5">
-            <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-bold mb-2">
-                Official Sahyadri College Student Registration (@sahyadri.edu.in)
-            </span>
-            <h2 class="fw-bold">Select Your Student Track</h2>
-            <p class="text-muted">Choose your program enrollment. Registration strictly requires your official @sahyadri.edu.in email.</p>
+    <div class="col-lg-8">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-gradient-purple mb-1">Select Your Student Track</h2>
+            <p class="text-muted small">Sahyadri College of Engineering &amp; Management (@sahyadri.edu.in strictly required)</p>
         </div>
 
-        <div class="row g-4 justify-content-center">
-            <!-- Option 1: Zenken Student -->
+        <div class="row g-3">
             <div class="col-md-6">
-                <div class="card h-100 shadow-sm border-2 border-danger">
-                    <div class="card-body p-4 text-center d-flex flex-column">
-                        <div class="mb-3 text-danger">
-                            <i class="bi bi-award-fill fs-1"></i>
-                        </div>
-                        <span class="badge badge-zenken-exclusive mx-auto mb-2 px-3 py-1">Japan Career Track</span>
-                        <h4 class="card-title fw-bold">Zenken Enrolled Scholar</h4>
-                        <p class="text-muted small flex-grow-1">
-                            For students officially enrolled in Zenken's Japan IT Placement and Japanese Language training program. Unlocks Japanese questions, Kanji sets, and exclusive recruitment drives.
-                        </p>
-                        <ul class="list-unstyled text-start small mb-4 text-secondary">
-                            <li class="mb-1"><i class="bi bi-check-circle-fill text-danger me-2"></i>Official Zenken ID required</li>
-                            <li class="mb-1"><i class="bi bi-check-circle-fill text-danger me-2"></i>🇯🇵 Japanese Language Questions &amp; Quizzes</li>
-                            <li class="mb-1"><i class="bi bi-check-circle-fill text-danger me-2"></i>Full Quantitative Aptitude Bank</li>
-                        </ul>
-                        <a href="{% url 'account:register_zenken' %}" class="btn btn-danger w-100 mt-auto">
-                            <i class="bi bi-check2-circle me-1"></i> Register as Zenken Scholar
-                        </a>
-                    </div>
+                <div class="card p-4 h-100 bg-white border text-center d-flex flex-column">
+                    <span class="badge badge-purple mx-auto mb-2">Zenken Track</span>
+                    <h5 class="fw-bold text-dark">Zenken Enrolled Scholar</h5>
+                    <p class="text-muted small flex-grow-1">Official Zenken Japan Career Track. Unlocks Japanese questions, Kanji practice, and Japanese IT placement drives.</p>
+                    <a href="{% url 'account:register_zenken' %}" class="btn btn-purple btn-sm w-100 mt-2">Register Zenken Scholar &rarr;</a>
                 </div>
             </div>
 
-            <!-- Option 2: Non-Zenken Student -->
             <div class="col-md-6">
-                <div class="card h-100 shadow-sm border-2 border-info">
-                    <div class="card-body p-4 text-center d-flex flex-column">
-                        <div class="mb-3 text-info">
-                            <i class="bi bi-calculator-fill fs-1"></i>
-                        </div>
-                        <span class="badge bg-info text-dark mx-auto mb-2 px-3 py-1">Campus Placement Track</span>
-                        <h4 class="card-title fw-bold">Non-Zenken Student</h4>
-                        <p class="text-muted small flex-grow-1">
-                            For Sahyadri students preparing for campus placement assessments, competitive tests, and technical interviews. Focused on Quantitative Aptitude and Logical Reasoning.
-                        </p>
-                        <ul class="list-unstyled text-start small mb-4 text-secondary">
-                            <li class="mb-1"><i class="bi bi-check-circle-fill text-info me-2"></i>1,200+ Topic-Wise Practice Questions</li>
-                            <li class="mb-1"><i class="bi bi-check-circle-fill text-info me-2"></i>Timed 20-Question Aptitude Quizzes</li>
-                            <li class="mb-1"><i class="bi bi-check-circle-fill text-info me-2"></i>Placement Opportunities &amp; Weekly Newsletter</li>
-                        </ul>
-                        <a href="{% url 'account:register_non_zenken' %}" class="btn btn-info text-dark fw-bold w-100 mt-auto">
-                            <i class="bi bi-arrow-right-circle me-1"></i> Register as Student
-                        </a>
-                    </div>
+                <div class="card p-4 h-100 bg-white border text-center d-flex flex-column">
+                    <span class="badge badge-purple-subtle mx-auto mb-2">Student Track</span>
+                    <h5 class="fw-bold text-dark">Student (Open Track)</h5>
+                    <p class="text-muted small flex-grow-1">General campus placement and competitive examination preparation. Full access to Quantitative Aptitude and Reasoning.</p>
+                    <a href="{% url 'account:register_non_zenken' %}" class="btn btn-outline-purple btn-sm w-100 mt-2">Register Student &rarr;</a>
                 </div>
             </div>
         </div>
 
-        <!-- Teacher Notice -->
-        <div class="alert alert-light border shadow-sm text-center mt-5 p-3 rounded-3">
-            <i class="bi bi-mortarboard-fill text-success me-2"></i>
-            <strong>Faculty &amp; Teachers:</strong> There is no separate registration needed.
-            <a href="{% url 'account:login' %}" class="fw-bold text-success ms-1">Go to Sign In</a> and enter your faculty name with password <strong>2654</strong> to access teacher tools.
-        </div>
-
-        <div class="text-center mt-3">
-            <span class="text-muted">Already registered?</span>
-            <a href="{% url 'account:login' %}" class="fw-semibold text-decoration-none ms-1">Sign in here</a>
+        <div class="p-3 bg-white rounded border small text-muted text-center mt-4">
+            <span class="fw-bold text-purple"><i class="bi bi-mortarboard-fill me-1"></i> Faculty / Teachers:</span> No registration required. <a href="{% url 'account:login' %}" class="text-purple fw-bold">Sign In</a> with faculty name and PIN <strong>2654</strong>.
         </div>
     </div>
 </div>

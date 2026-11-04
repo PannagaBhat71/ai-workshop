@@ -1,65 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ role_title }} - Zenken Academy{% endblock %}
+{% block title %}{{ role_title }} - scemquiz.arena{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-7 col-md-9">
-        <div class="card shadow-sm">
-            <div class="card-header p-4 text-center">
-                <span class="badge {{ badge_class }} mb-2 px-3 py-1 fs-6">{{ role_badge }}</span>
-                <h3 class="fw-bold mb-1">{{ role_title }}</h3>
+        <div class="card p-4 bg-white border">
+            <div class="text-center mb-4">
+                <span class="badge {{ badge_class }} mb-2">{{ role_badge }}</span>
+                <h4 class="fw-bold text-gradient-purple mb-1">{{ role_title }}</h4>
                 <p class="text-muted small mb-0">{{ description }}</p>
             </div>
-            <div class="card-body p-4 p-md-5">
-                <form method="post" novalidate>
-                    {% csrf_token %}
 
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}
-                                <p class="mb-0">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger py-2 small">{{ form.non_field_errors }}</div>
+                {% endif %}
 
-                    {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
-                                {{ field.label }}
-                                {% if field.field.required %}
-                                    <span class="text-danger">*</span>
-                                {% endif %}
-                            </label>
-                            {{ field }}
-                            {% if field.help_text %}
-                                <div class="form-text text-muted">{{ field.help_text }}</div>
-                            {% endif %}
-                            {% if field.errors %}
-                                <div class="text-danger small mt-1">
-                                    {% for error in field.errors %}
-                                        <div><i class="bi bi-x-circle me-1"></i>{{ error }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-dark btn-lg">
-                            <i class="bi bi-check-circle me-1"></i> Complete Registration
-                        </button>
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-text small text-muted">{{ field.help_text }}</div>{% endif %}
+                        {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors }}</div>{% endif %}
                     </div>
-                </form>
-            </div>
-            <div class="card-footer text-center py-3 bg-light">
-                <small class="text-muted">
-                    Wrong role? <a href="{% url 'account:register_select' %}">Choose another account type</a> | 
-                    Already registered? <a href="{% url 'account:login' %}">Log In</a>
-                </small>
+                {% endfor %}
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-purple py-2">Complete Registration</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3 small text-muted">
+                Wrong track? <a href="{% url 'account:register_select' %}" class="text-purple">Choose another</a> &bull; Already registered? <a href="{% url 'account:login' %}" class="text-purple">Sign In</a>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

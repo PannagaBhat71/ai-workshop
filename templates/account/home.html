@@ -1,105 +1,58 @@
 {% extends 'base.html' %}
 
-{% block title %}Welcome to scemquiz.arena &bull; Quantitative &amp; Japanese Aptitude Arena{% endblock %}
+{% block title %}scemquiz.arena - Placement &amp; Japanese Aptitude Arena{% endblock %}
 
 {% block content %}
-<div class="row align-items-center mb-5 py-4">
-    <div class="col-lg-9 mx-auto text-center">
-        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-bold mb-3 border border-primary-subtle">
-            <i class="bi bi-cpu-fill me-1"></i> Interactive Examination &amp; Practice Arena
+<div class="row align-items-center py-5">
+    <div class="col-lg-8 mx-auto text-center">
+        <span class="badge badge-purple-subtle px-3 py-1 mb-3">
+            <i class="bi bi-mortarboard-fill me-1"></i> Sahyadri College of Engineering &amp; Management
         </span>
-        <h1 class="display-4 fw-bold text-dark mb-3">
-            Welcome to <span class="brand-scem" style="color: #0f172a;">scemquiz</span><span class="brand-dot">.</span><span class="brand-arena">arena</span>
+        <h1 class="display-3 fw-bold text-gradient-purple mb-2">
+            scemquiz.arena
         </h1>
-        <p class="lead text-muted mb-4">
-            A high-performance portal powering <strong>Quantitative Aptitude</strong> for aspiring engineers and <strong>Japanese Language &amp; Placement Tracks</strong> exclusively for Zenken Scholars. Featuring automated voice-dictated question generation and scheduled testing.
+        <p class="lead text-muted mb-4 fs-5">
+            Modern examination and practice platform for <strong>Quantitative Aptitude</strong> and exclusive <strong>Japanese Language Tracks</strong> for Zenken Scholars. Features 1,200+ real MCQs, strict 20-question timed quizzes, leaderboards, and interactive Groq AI tutor.
         </p>
-        <div class="d-flex justify-content-center gap-3">
-            <a href="{% url 'account:register_select' %}" class="btn btn-arena btn-lg px-4 shadow">
-                <i class="bi bi-person-plus-fill me-2"></i> Join the Arena
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'account:register_select' %}" class="btn btn-purple px-4 py-2">
+                <i class="bi bi-person-plus-fill me-1"></i> Register Student
             </a>
-            <a href="{% url 'account:login' %}" class="btn btn-outline-dark btn-lg px-4">
-                <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
+            <a href="{% url 'account:login' %}" class="btn btn-outline-purple px-4 py-2">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
             </a>
         </div>
     </div>
 </div>
 
-<div class="row g-4 mb-5">
-    <div class="col-12 text-center mb-2">
-        <h3 class="fw-bold">Three Specialized Access Tracks</h3>
-        <p class="text-muted">Designed for Zenken scholars, competitive engineering students, and faculty mentors</p>
-    </div>
-
-    <!-- Account 1: Zenken Enrolled Students -->
+<div class="row g-4 mb-4">
+    <!-- Zenken Scholar Track -->
     <div class="col-md-4">
-        <div class="card h-100 border-2 border-danger shadow-sm">
-            <div class="card-body p-4 text-center d-flex flex-column">
-                <div class="mx-auto mb-3 text-danger">
-                    <i class="bi bi-award-fill fs-1"></i>
-                </div>
-                <span class="badge badge-zenken-exclusive mx-auto mb-2 px-3 py-1">Enrolled Scholars</span>
-                <h4 class="card-title fw-bold">Zenken Enrolled Students</h4>
-                <p class="card-text text-muted small flex-grow-1">
-                    Complete access to both Japanese Language Question Sets (Kanji, JLPT Grammar, Vocabulary) and Quantitative Aptitude tests with company recruitment tracks.
-                </p>
-                <ul class="list-unstyled text-start small mb-4 text-secondary">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i><strong>🇯🇵 Exclusive Japanese Quizzes</strong></li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i>Kanji &amp; Business Etiquette Practice Sets</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i>All Quantitative Aptitude Problem Sets</li>
-                </ul>
-                <a href="{% url 'account:register_zenken' %}" class="btn btn-danger w-100">
-                    Register as Zenken Scholar
-                </a>
-            </div>
+        <div class="card p-4 h-100 bg-white border text-center d-flex flex-column">
+            <span class="badge badge-purple mx-auto mb-2">Zenken Scholars</span>
+            <h5 class="fw-bold text-dark">Zenken Japan Career Track</h5>
+            <p class="text-muted small flex-grow-1">Exclusive Japanese questions (Kanji, JLPT grammar, vocabulary), placement drives, and complete quantitative aptitude.</p>
+            <a href="{% url 'account:register_zenken' %}" class="btn btn-purple btn-sm w-100 mt-2">Register Zenken Scholar</a>
         </div>
     </div>
 
-    <!-- Account 2: Non-Zenken Students -->
+    <!-- Student Track -->
     <div class="col-md-4">
-        <div class="card h-100 border-2 border-info shadow-sm">
-            <div class="card-body p-4 text-center d-flex flex-column">
-                <div class="mx-auto mb-3 text-info">
-                    <i class="bi bi-calculator-fill fs-1"></i>
-                </div>
-                <span class="badge bg-info-subtle text-info-emphasis mx-auto mb-2 px-3 py-1">Open Preparation</span>
-                <h4 class="card-title fw-bold">Non-Zenken Students</h4>
-                <p class="card-text text-muted small flex-grow-1">
-                    Focused exclusively on high-impact Quantitative Aptitude and Logical Reasoning for campus recruitment, technical assessments, and competitive exams.
-                </p>
-                <ul class="list-unstyled text-start small mb-4 text-secondary">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Full Quantitative Aptitude Bank</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Logical Reasoning &amp; Practice Arena</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>Scheduled Aptitude Assessment Quizzes</li>
-                </ul>
-                <a href="{% url 'account:register_non_zenken' %}" class="btn btn-outline-info text-dark w-100">
-                    Register as Student
-                </a>
-            </div>
+        <div class="card p-4 h-100 bg-white border text-center d-flex flex-column">
+            <span class="badge badge-purple-subtle mx-auto mb-2">Open Students</span>
+            <h5 class="fw-bold text-dark">Quantitative Aptitude Track</h5>
+            <p class="text-muted small flex-grow-1">1,200+ practice questions across 12 aptitude topics, anti-cheat timed assessments, placement opportunities, and newsletters.</p>
+            <a href="{% url 'account:register_non_zenken' %}" class="btn btn-outline-purple btn-sm w-100 mt-2">Register Student</a>
         </div>
     </div>
 
-    <!-- Account 3: Teachers / Superusers -->
+    <!-- Faculty -->
     <div class="col-md-4">
-        <div class="card h-100 border-2 border-success shadow-sm">
-            <div class="card-body p-4 text-center d-flex flex-column">
-                <div class="mx-auto mb-3 text-success">
-                    <i class="bi bi-mortarboard-fill fs-1"></i>
-                </div>
-                <span class="badge bg-success text-white mx-auto mb-2 px-3 py-1">Faculty &amp; Superuser</span>
-                <h4 class="card-title fw-bold">Academy Teachers</h4>
-                <p class="card-text text-muted small flex-grow-1">
-                    Full faculty superuser privileges: review student test activities, schedule &amp; post quizzes, and dictate questions with automated AI option generator.
-                </p>
-                <ul class="list-unstyled text-start small mb-4 text-secondary">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>🎙️ Voice Dictation Question Creator</strong></li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>📊 Review All Student Submissions</strong></li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Schedule &amp; Post Timed Quizzes</li>
-                </ul>
-                <a href="{% url 'account:register_teacher' %}" class="btn btn-success w-100">
-                    Join as Teacher (Pass: 2654)
-                </a>
-            </div>
+        <div class="card p-4 h-100 bg-white border text-center d-flex flex-column">
+            <span class="badge bg-secondary mx-auto mb-2">Faculty Superuser</span>
+            <h5 class="fw-bold text-dark">Teacher Control Portal</h5>
+            <p class="text-muted small flex-grow-1">Review student activities, schedule 20-Q quizzes, voice-dictate questions with smart option generation, and post study notes.</p>
+            <a href="{% url 'account:login' %}" class="btn btn-outline-purple btn-sm w-100 mt-2">Faculty Sign In (PIN 2654)</a>
         </div>
     </div>
 </div>

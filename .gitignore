@@ -13,8 +13,12 @@ __pycache__/
 venv/
 ENV/
 
+# Staticfiles / Build artifacts
+staticfiles/
+
 # IDE / Editor files
 .vscode/
 .idea/
 *.swp
 *.swo
+

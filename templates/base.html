@@ -4,262 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}scemquiz.arena &bull; Quantitative &amp; Japanese Aptitude Arena{% endblock %}</title>
-    
-    <!-- Google Fonts: Orbitron, Space Grotesk & Outfit -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap 5 CSS -->
+    <!-- Lightweight Bootstrap 5 & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <style>
         :root {
-            --arena-primary: #6366f1;
-            --arena-accent: #06b6d4;
-            --arena-gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-            --arena-dark: #0f172a;
-            --arena-card-bg: #ffffff;
-            --arena-bg: #f8fafc;
+            --purple-primary: #7c3aed;
+            --purple-dark: #4c1d95;
+            --purple-deep: #2e1065;
+            --purple-light: #f5f3ff;
+            --purple-subtle: #ede9fe;
+            --purple-border: #ddd6fe;
+            --text-dark: #1e1b4b;
         }
-
         body {
-            background-color: var(--arena-bg);
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #1e293b;
+            background-color: #fafafa;
+            color: var(--text-dark);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-
-        /* Stylish scemquiz.arena Brand Font */
+        /* Stylish Brand & Gradient Text */
         .brand-logo {
-            font-family: 'Orbitron', 'Space Grotesk', sans-serif;
-            font-weight: 900;
-            font-size: 1.45rem;
-            letter-spacing: -0.5px;
-            display: inline-flex;
-            align-items: center;
+            font-weight: 800;
+            font-size: 1.35rem;
             text-decoration: none;
+            letter-spacing: -0.5px;
         }
-        .brand-scem {
-            color: #ffffff;
-            text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
-        }
-        .brand-dot {
-            color: #38bdf8;
-            font-size: 1.6rem;
-            line-height: 1;
-            animation: pulse-dot 2s infinite ease-in-out;
-        }
-        .brand-arena {
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #f43f5e 100%);
+        .text-gradient-purple {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #9333ea 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 900;
-            text-transform: lowercase;
         }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
+        .navbar-purple {
+            background: #ffffff;
+            border-bottom: 2px solid var(--purple-border);
+            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.05);
         }
-
-        .navbar-custom {
-            background-color: #0b0f19;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .nav-link {
+        .navbar-purple .nav-link {
+            color: #4b5563 !important;
             font-weight: 500;
-            color: #cbd5e1 !important;
-            transition: all 0.2s ease;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: #ffffff !important;
-        }
-
-        .live-test-banner {
-            background: linear-gradient(90deg, #dc2626 0%, #ea580c 50%, #dc2626 100%);
-            color: white;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-align: center;
-            animation: banner-pulse 3s infinite ease-in-out;
-        }
-        @keyframes banner-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.88; }
-        }
-
-        .practice-arena-nav-btn {
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.35);
+            padding: 0.5rem 0.75rem;
             border-radius: 8px;
-            padding: 6px 14px;
-            color: #a5b4fc !important;
+            transition: all 0.15s ease;
+        }
+        .navbar-purple .nav-link:hover, .navbar-purple .nav-link.active {
+            color: var(--purple-primary) !important;
+            background: var(--purple-light);
+        }
+        .btn-purple {
+            background-color: var(--purple-primary);
+            color: #ffffff;
+            border: 1px solid var(--purple-primary);
             font-weight: 600;
+            border-radius: 8px;
+            padding: 0.45rem 1rem;
         }
-        .practice-arena-nav-btn:hover {
-            background: rgba(99, 102, 241, 0.3);
-            color: #ffffff !important;
+        .btn-purple:hover {
+            background-color: var(--purple-dark);
+            color: #ffffff;
         }
-
+        .btn-outline-purple {
+            border: 1px solid var(--purple-primary);
+            color: var(--purple-primary);
+            background: transparent;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        .btn-outline-purple:hover {
+            background: var(--purple-light);
+            color: var(--purple-dark);
+        }
         .card {
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            border: 1px solid var(--purple-border);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.04);
             background: #ffffff;
         }
         .card-header {
-            background-color: #ffffff;
-            border-bottom: 1px solid #f1f5f9;
+            background: var(--purple-light);
+            border-bottom: 1px solid var(--purple-border);
+            color: var(--purple-dark);
             font-weight: 700;
         }
-        .btn {
-            border-radius: 10px;
+        .badge-purple {
+            background-color: var(--purple-primary);
+            color: #ffffff;
+        }
+        .badge-purple-subtle {
+            background-color: var(--purple-subtle);
+            color: var(--purple-dark);
+            border: 1px solid var(--purple-border);
+        }
+        .live-banner {
+            background: linear-gradient(90deg, #7c3aed, #9333ea);
+            color: #ffffff;
             font-weight: 600;
+            font-size: 0.88rem;
+            padding: 8px 12px;
+            text-align: center;
         }
-        .btn-arena {
-            background: var(--arena-gradient);
-            color: white;
-            border: none;
-            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
-        }
-        .btn-arena:hover {
-            background: linear-gradient(135deg, #4338ca 0%, #0891b2 100%);
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .badge-zenken-exclusive {
-            background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
-            color: white;
-            border: none;
-            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
-        }
-
-        /* Floating Interactive AI Tutor Chat Widget */
-        .chat-floating-btn {
+        /* Mobile-Optimized Floating Chatbot */
+        .chat-float-btn {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 1050;
-            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-            color: white;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1040;
+            background: var(--purple-primary);
+            color: #ffffff;
             border: none;
             border-radius: 50px;
-            padding: 12px 20px;
-            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.45);
+            padding: 10px 18px;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .chat-floating-btn:hover {
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 12px 30px rgba(79, 70, 229, 0.6);
+        .chat-float-btn:hover {
+            background: var(--purple-dark);
+            color: #ffffff;
         }
-
-        .chat-window {
+        .chat-box {
             position: fixed;
-            bottom: 84px;
-            right: 24px;
-            width: 380px;
-            max-width: calc(100vw - 36px);
-            height: 520px;
-            max-height: calc(100vh - 120px);
+            bottom: 75px;
+            right: 20px;
+            width: 360px;
+            max-width: calc(100vw - 32px);
+            height: 480px;
+            max-height: calc(100vh - 100px);
             background: #ffffff;
-            border-radius: 18px;
-            box-shadow: 0 15px 40px rgba(15, 23, 42, 0.25);
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--purple-border);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(46, 16, 101, 0.12);
             z-index: 1050;
             display: none;
             flex-direction: column;
             overflow: hidden;
-            animation: slide-up 0.25s ease-out;
         }
-        @keyframes slide-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .chat-box-header {
+            background: var(--purple-dark);
+            color: #ffffff;
+            padding: 10px 14px;
         }
-        .chat-header {
-            background: #0f172a;
-            color: white;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chat-messages {
+        .chat-stream {
             flex: 1;
-            padding: 16px;
+            padding: 12px;
             overflow-y: auto;
-            background: #f8fafc;
+            background: #fafafa;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
         .chat-bubble {
             max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            line-height: 1.45;
         }
-        .chat-bubble-user {
-            background: #4f46e5;
-            color: white;
+        .bubble-user {
+            background: var(--purple-primary);
+            color: #ffffff;
             align-self: flex-end;
             border-bottom-right-radius: 2px;
         }
-        .chat-bubble-bot {
+        .bubble-bot {
             background: #ffffff;
-            color: #1e293b;
-            border: 1px solid #e2e8f0;
+            color: var(--text-dark);
+            border: 1px solid var(--purple-border);
             align-self: flex-start;
             border-bottom-left-radius: 2px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
-        .chat-input-area {
-            padding: 12px;
-            background: #ffffff;
-            border-top: 1px solid #f1f5f9;
-        }
-        .chat-chips {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding: 6px 12px;
-            background: #f1f5f9;
-            border-top: 1px solid #e2e8f0;
-            white-space: nowrap;
-        }
-        .chat-chip {
-            font-size: 0.72rem;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            padding: 3px 8px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .chat-chip:hover {
-            background: #4f46e5;
-            color: white;
-            border-color: #4f46e5;
-        }
-
         footer {
-            background: #0b0f19;
-            color: #94a3b8;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 1.5rem 0;
+            background: #ffffff;
+            border-top: 1px solid var(--purple-border);
+            color: #6b7280;
+            padding: 1.25rem 0;
             margin-top: auto;
         }
     </style>
@@ -267,26 +190,23 @@
 </head>
 <body>
 
-    <!-- AUTOMATIC LIVE TEST NOTIFICATION BANNER -->
+    <!-- Live Test Notification Banner -->
     {% if active_tests %}
         {% for test in active_tests %}
-            <div class="live-test-banner d-flex justify-content-center align-items-center gap-2">
-                <span class="badge bg-white text-danger fw-bold"><i class="bi bi-broadcast"></i> LIVE TEST IN PROGRESS</span>
-                <span><strong>{{ test.title }}</strong> is active now! (20 Questions &bull; {{ test.duration_minutes }} Mins)</span>
-                <a href="{% url 'app:quiz_detail' test.pk %}" class="btn btn-sm btn-light text-danger fw-bold ms-2 py-0">
-                    Take Test Now &rarr;
-                </a>
+            <div class="live-banner d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                <span class="badge bg-white text-dark fw-bold"><i class="bi bi-broadcast text-danger"></i> LIVE TEST</span>
+                <span><strong>{{ test.title }}</strong> is active now (20 Questions &bull; {{ test.duration_minutes }} Mins)</span>
+                <a href="{% url 'app:quiz_detail' test.pk %}" class="btn btn-sm btn-light text-purple fw-bold py-0">Take Test &rarr;</a>
             </div>
         {% endfor %}
     {% endif %}
 
-    <!-- Main Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <!-- Purple & White Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-purple sticky-top">
         <div class="container">
-            <!-- Brand in stylish font -->
-            <a class="brand-logo me-3" href="{% if user.is_authenticated %}{% url 'account:dashboard' %}{% else %}{% url 'account:home' %}{% endif %}">
-                <i class="bi bi-cpu-fill text-info me-2 fs-4"></i>
-                <span class="brand-scem">scemquiz</span><span class="brand-dot">.</span><span class="brand-arena">arena</span>
+            <a class="brand-logo d-flex align-items-center me-3" href="{% if user.is_authenticated %}{% url 'account:dashboard' %}{% else %}{% url 'account:home' %}{% endif %}">
+                <i class="bi bi-mortarboard-fill text-purple me-2 fs-4" style="color: var(--purple-primary);"></i>
+                <span style="color: var(--purple-dark);">scemquiz</span><span style="color: var(--purple-primary);">.arena</span>
             </a>
 
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
@@ -294,148 +214,40 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center gap-1">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account:dashboard' %}">
-                                <i class="bi bi-speedometer2 me-1"></i> Dashboard
-                            </a>
-                        </li>
-
-                        <!-- SPECIFIC NAVBAR SECTION: LEADERBOARD & STREAKS -->
-                        <li class="nav-item">
-                            <a class="nav-link text-warning fw-semibold" href="{% url 'app:leaderboard' %}">
-                                <i class="bi bi-trophy-fill text-warning me-1"></i> Leaderboard
-                            </a>
-                        </li>
-
-                        <!-- TOPIC-WISE PRACTICE ROOM & PRACTICE ARENA -->
+                        <li class="nav-item"><a class="nav-link" href="{% url 'account:dashboard' %}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'app:leaderboard' %}"><i class="bi bi-trophy-fill text-warning me-1"></i>Leaderboard</a></li>
+                        
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle practice-arena-nav-btn d-flex align-items-center gap-1" href="#" id="practiceDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-lightning-charge-fill text-warning"></i>
-                                <span>Practice Arena</span>
-                            </a>
-                            <ul class="dropdown-menu shadow-lg border-0 py-2" style="border-radius: 12px; min-width: 280px;">
-                                <li class="dropdown-header text-uppercase fw-bold text-primary small">
-                                    <i class="bi bi-folder-check me-1"></i> Topic-Wise Practice Rooms
-                                </li>
-                                <li>
-                                    <a class="dropdown-item py-2 fw-semibold" href="{% url 'app:topic_practice_rooms' %}">
-                                        <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i> All Topic Practice Rooms (1,200+ MCQs)
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li class="dropdown-header text-uppercase fw-bold text-muted small">Quick Practice Sets</li>
-                                <li>
-                                    <a class="dropdown-item d-flex justify-content-between align-items-center py-2" href="{% url 'app:practice_arena' %}?set=aptitude">
-                                        <span><i class="bi bi-calculator me-2 text-primary"></i>Quantitative Aptitude</span>
-                                        <span class="badge bg-light text-dark border">Arithmetic</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item d-flex justify-content-between align-items-center py-2" href="{% url 'app:practice_arena' %}?set=reasoning">
-                                        <span><i class="bi bi-diagram-3 me-2 text-info"></i>Logical Reasoning</span>
-                                        <span class="badge bg-light text-dark border">Logic</span>
-                                    </a>
-                                </li>
-
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-grid-3x3-gap-fill text-purple me-1"></i>Practice</a>
+                            <ul class="dropdown-menu shadow-sm border py-2" style="border-radius: 10px;">
+                                <li><a class="dropdown-item fw-semibold" href="{% url 'app:topic_practice_rooms' %}"><i class="bi bi-folder2-open text-purple me-2"></i>Topic Practice Rooms (1,200+ MCQs)</a></li>
+                                <li><a class="dropdown-item" href="{% url 'app:practice_arena' %}?set=aptitude"><i class="bi bi-calculator me-2"></i>Quantitative Aptitude</a></li>
+                                <li><a class="dropdown-item" href="{% url 'app:practice_arena' %}?set=reasoning"><i class="bi bi-diagram-3 me-2"></i>Logical Reasoning</a></li>
                                 {% if user.is_zenken_student or user.is_teacher %}
                                     <li><hr class="dropdown-divider"></li>
-                                    <li class="dropdown-header text-uppercase fw-bold text-danger small">
-                                        <i class="bi bi-star-fill text-warning me-1"></i>Zenken Exclusive Sets
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item d-flex justify-content-between align-items-center py-2" href="{% url 'app:practice_arena' %}?set=japanese">
-                                            <span>🇯🇵 Japanese All Sets</span>
-                                            <span class="badge badge-zenken-exclusive">JLPT</span>
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li class="px-3 py-1 small text-muted">
-                                        <i class="bi bi-lock-fill text-danger me-1"></i> Japanese Sets: <em>Zenken Enrolled Only</em>
-                                    </li>
+                                    <li><a class="dropdown-item fw-semibold text-purple" href="{% url 'app:practice_arena' %}?set=japanese">🇯🇵 Japanese Sets (Zenken Exclusive)</a></li>
                                 {% endif %}
                             </ul>
                         </li>
 
-                        <!-- 20-Question Quizzes -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'app:quiz_list' %}">
-                                <i class="bi bi-stopwatch-fill me-1 text-danger"></i> Quizzes (20 Qs)
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'app:quiz_list' %}"><i class="bi bi-stopwatch-fill text-danger me-1"></i>Quizzes (20 Qs)</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'app:opportunity_list' %}"><i class="bi bi-briefcase-fill text-success me-1"></i>Opportunities</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'app:newsletter_list' %}"><i class="bi bi-newspaper me-1"></i>Newsletter</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'app:material_list' %}"><i class="bi bi-file-earmark-text me-1"></i>Materials</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'app:assistant_page' %}"><i class="bi bi-robot text-purple me-1"></i>AI Tutor</a></li>
 
-                        <!-- Placement Opportunities -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'app:opportunity_list' %}">
-                                <i class="bi bi-briefcase-fill me-1 text-success"></i> Opportunities
-                            </a>
-                        </li>
-
-                        <!-- Weekly Newsletter -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'app:newsletter_list' %}">
-                                <i class="bi bi-newspaper me-1 text-info"></i> Newsletter
-                            </a>
-                        </li>
-
-                        <!-- Study Materials -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'app:material_list' %}">
-                                <i class="bi bi-file-earmark-pdf-fill me-1 text-secondary"></i> Materials
-                            </a>
-                        </li>
-
-                        <!-- AI Mentor Page Link -->
-                        <li class="nav-item">
-                            <a class="nav-link text-info fw-semibold" href="{% url 'app:assistant_page' %}">
-                                <i class="bi bi-robot text-info me-1"></i> AI Tutor
-                            </a>
-                        </li>
-
-                        <!-- TEACHER EXCLUSIVE NAV ACTIONS -->
                         {% if user.is_teacher %}
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-warning fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-shield-lock-fill me-1"></i> Faculty Tools
-                                </a>
-                                <ul class="dropdown-menu shadow border-0" style="border-radius: 10px;">
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'app:student_activities' %}">
-                                            <i class="bi bi-person-check-fill text-success me-2"></i> Review Student Activities
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'app:quiz_create' %}">
-                                            <i class="bi bi-calendar-plus-fill text-primary me-2"></i> Schedule 20-Q Quiz
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'app:question_create' %}">
-                                            <i class="bi bi-mic-fill text-danger me-2"></i> Dictate Question (Voice)
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'app:newsletter_create' %}">
-                                            <i class="bi bi-newspaper text-info me-2"></i> Publish Weekly Newsletter
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'app:opportunity_create' %}">
-                                            <i class="bi bi-briefcase text-success me-2"></i> Post Job Opportunity
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'app:material_upload' %}">
-                                            <i class="bi bi-upload text-secondary me-2"></i> Upload Student Materials
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'app:update_create' %}">
-                                            <i class="bi bi-broadcast text-warning me-2"></i> Broadcast Notice
-                                        </a>
-                                    </li>
+                                <a class="nav-link dropdown-toggle text-purple fw-bold" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-shield-lock-fill me-1"></i>Faculty</a>
+                                <ul class="dropdown-menu shadow-sm border py-2" style="border-radius: 10px;">
+                                    <li><a class="dropdown-item" href="{% url 'app:student_activities' %}"><i class="bi bi-people-fill me-2"></i>Student Activities</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'app:quiz_create' %}"><i class="bi bi-plus-circle me-2"></i>Schedule 20-Q Quiz</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'app:question_create' %}"><i class="bi bi-mic-fill text-danger me-2"></i>Voice Dictate Question</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'app:newsletter_create' %}"><i class="bi bi-newspaper me-2"></i>Publish Newsletter</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'app:opportunity_create' %}"><i class="bi bi-briefcase me-2"></i>Post Opportunity</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'app:material_upload' %}"><i class="bi bi-upload me-2"></i>Upload Materials</a></li>
                                 </ul>
                             </li>
                         {% endif %}
@@ -445,257 +257,143 @@
                 <ul class="navbar-nav ms-auto align-items-center">
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light d-flex align-items-center gap-2" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
-                                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                                    <i class="bi bi-person-fill"></i>
-                                </div>
-                                <span class="fw-semibold">{{ user.first_name|default:user.username }}</span>
-                                {% if user.is_teacher %}
-                                    <span class="badge bg-success">Faculty / Superuser</span>
-                                {% elif user.is_zenken_student %}
-                                    <span class="badge badge-zenken-exclusive">Zenken</span>
-                                {% else %}
-                                    <span class="badge bg-info text-dark">Student</span>
-                                {% endif %}
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                                <span class="badge badge-purple-subtle">{{ user.first_name|default:user.username }}</span>
+                                {% if user.is_teacher %}<span class="badge bg-success">Faculty</span>{% elif user.is_zenken_student %}<span class="badge badge-purple">Zenken</span>{% else %}<span class="badge bg-secondary">Student</span>{% endif %}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 12px;">
-                                <li class="px-3 py-2 small text-muted border-bottom">
-                                    Signed in as <strong>{{ user.username }}</strong><br>
-                                    <span class="text-secondary">{{ user.email|default:"sahyadri.edu.in" }}</span>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'app:assistant_page' %}">
-                                        <i class="bi bi-robot text-primary me-2"></i> Open Arena AI Tutor
-                                    </a>
-                                </li>
-                                {% if user.is_teacher %}
-                                    <li><a class="dropdown-item" href="{% url 'app:student_activities' %}"><i class="bi bi-graph-up me-2"></i>Student Performance Logs</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'app:quiz_create' %}"><i class="bi bi-calendar-plus me-2"></i>Schedule Quiz</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'app:question_create' %}"><i class="bi bi-mic me-2"></i>Voice Dictate Question</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                {% endif %}
-                                {% if user.is_superuser %}
-                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-gear-fill me-2"></i>Django Admin</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                {% endif %}
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border" style="border-radius: 10px;">
+                                <li class="px-3 py-1 small text-muted">{{ user.email|default:"sahyadri.edu.in" }}</li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{% url 'account:logout' %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                        </button>
+                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
                                     </form>
                                 </li>
                             </ul>
                         </li>
                     {% else %}
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-light btn-sm px-3" href="{% url 'account:login' %}">
-                                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-arena btn-sm px-3" href="{% url 'account:register_select' %}">
-                                <i class="bi bi-person-plus-fill me-1"></i> Register Student
-                            </a>
-                        </li>
+                        <li class="nav-item me-2"><a class="btn btn-outline-purple btn-sm" href="{% url 'account:login' %}">Sign In</a></li>
+                        <li class="nav-item"><a class="btn btn-purple btn-sm" href="{% url 'account:register_select' %}">Register Student</a></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Alert Messages -->
+    <!-- Messages -->
     <div class="container mt-3">
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
-                    {% if message.tags == 'error' %}
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    {% elif message.tags == 'success' %}
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                    {% elif message.tags == 'warning' %}
-                        <i class="bi bi-exclamation-circle-fill me-2"></i>
-                    {% else %}
-                        <i class="bi bi-info-circle-fill me-2"></i>
-                    {% endif %}
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            {% for m in messages %}
+                <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show py-2 small" role="alert">
+                    {{ m }}
+                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
                 </div>
             {% endfor %}
         {% endif %}
     </div>
 
-    <!-- Main Content Container -->
-    <main class="main-content flex-grow-1 py-4">
+    <!-- Main Body Container -->
+    <main class="flex-grow-1 py-3">
         <div class="container">
             {% block content %}{% endblock %}
         </div>
     </main>
 
-    <!-- FLOATING INTERACTIVE AI TUTOR WIDGET (POWERED BY GROQ) -->
+    <!-- Optimized Floating Groq AI Chat Widget -->
     {% if user.is_authenticated %}
-        <button type="button" class="chat-floating-btn" id="openChatWidgetBtn">
-            <i class="bi bi-robot fs-5"></i>
-            <span>Ask AI Tutor</span>
+        <button type="button" class="chat-float-btn" id="openChatBtn">
+            <i class="bi bi-robot fs-5"></i><span>Ask AI Tutor</span>
         </button>
 
-        <div class="chat-window" id="chatWidgetWindow">
-            <div class="chat-header">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-success rounded-circle p-1"><span class="visually-hidden">Online</span></span>
-                    <strong class="text-white small">Arena AI Mentor &bull; Powered by Groq</strong>
-                </div>
-                <div class="d-flex gap-1">
-                    <a href="{% url 'app:assistant_page' %}" class="btn btn-sm btn-dark text-white-50 p-1 py-0" title="Full Screen View">
-                        <i class="bi bi-arrows-fullscreen"></i>
-                    </a>
-                    <button type="button" class="btn btn-sm btn-dark text-white-50 p-1 py-0" id="closeChatWidgetBtn">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-box-header d-flex justify-content-between align-items-center">
+                <span class="small fw-bold"><i class="bi bi-stars me-1 text-warning"></i>Arena AI &bull; Groq</span>
+                <div>
+                    <a href="{% url 'app:assistant_page' %}" class="text-white me-2" title="Full Screen"><i class="bi bi-arrows-fullscreen"></i></a>
+                    <button type="button" class="btn-close btn-close-white btn-sm" id="closeChatBtn"></button>
                 </div>
             </div>
-
-            <!-- Messages Stream -->
-            <div class="chat-messages" id="chatStream">
-                <div class="chat-bubble chat-bubble-bot">
-                    👋 Hello <strong>{{ user.first_name|default:user.username }}</strong>! I'm your <strong>Arena AI Tutor</strong> powered by Groq. How can I help you today?
-                    <div class="small text-muted mt-1" style="font-size: 0.72rem;">Ask about aptitude shortcuts, Japanese grammar, or placement guidance!</div>
+            <div class="chat-stream" id="chatStream">
+                <div class="chat-bubble bubble-bot">
+                    Hello <strong>{{ user.first_name|default:user.username }}</strong>! Ask me any aptitude shortcut formula, Japanese grammar point, or interview tip.
                 </div>
             </div>
-
-            <!-- Quick Suggestion Chips -->
-            <div class="chat-chips">
-                <span class="chat-chip" onclick="sendQuickPrompt('Explain the shortcut formula for Time and Work problems')">⏱️ Time &amp; Work Trick</span>
-                <span class="chat-chip" onclick="sendQuickPrompt('Give me a tip to calculate percentages quickly')">📐 Percentage Shortcut</span>
-                {% if user.is_zenken_student or user.is_teacher %}
-                    <span class="chat-chip" onclick="sendQuickPrompt('Explain difference between は and が in Japanese')">🇯🇵 は vs が Grammar</span>
-                {% endif %}
-                <span class="chat-chip" onclick="sendQuickPrompt('What are key placement interview tips for 2026 batch?')">💼 Placement Tips</span>
-            </div>
-
-            <!-- Input Area -->
-            <div class="chat-input-area">
-                <form id="chatWidgetForm" class="d-flex gap-2">
-                    <input type="text" id="chatWidgetInput" class="form-control form-control-sm" placeholder="Ask question, math trick, or grammar..." autocomplete="off">
-                    <button type="submit" class="btn btn-arena btn-sm px-3" id="chatWidgetSendBtn">
-                        <i class="bi bi-send-fill"></i>
-                    </button>
-                </form>
-            </div>
+            <form id="chatForm" class="p-2 border-top bg-white d-flex gap-2">
+                <input type="text" id="chatInput" class="form-control form-control-sm" placeholder="Ask AI Tutor..." autocomplete="off">
+                <button type="submit" class="btn btn-purple btn-sm px-3" id="chatSendBtn"><i class="bi bi-send-fill"></i></button>
+            </form>
         </div>
     {% endif %}
 
     <!-- Footer -->
     <footer>
         <div class="container text-center small">
-            <div class="brand-logo mb-2 justify-content-center">
-                <span class="brand-scem">scemquiz</span><span class="brand-dot">.</span><span class="brand-arena">arena</span>
-            </div>
-            <p class="mb-1 text-secondary">
-                Sahyadri College of Engineering &amp; Management &bull; Placement &amp; Japanese Aptitude Arena
-            </p>
-            <p class="mb-0 text-muted" style="font-size: 0.75rem;">
-                Official Student Authentication Strictly via <strong>@sahyadri.edu.in</strong> &bull; Faculty Superuser Pass: 2654 &bull; AI Powered by Groq
+            <p class="mb-1 fw-bold text-gradient-purple">scemquiz.arena</p>
+            <p class="mb-0 text-muted" style="font-size: 0.78rem;">
+                Sahyadri College of Engineering &amp; Management &bull; Placement &amp; Japanese Aptitude Arena &bull; Strictly <strong>@sahyadri.edu.in</strong> &bull; Faculty PIN: 2654
             </p>
         </div>
     </footer>
 
-    <!-- Bootstrap 5 Bundle JS -->
+    <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Interactive AI Tutor Client-Side Script -->
+    <!-- Mobile-Optimized Fast Chat Script -->
     {% if user.is_authenticated %}
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const openBtn = document.getElementById('openChatWidgetBtn');
-        const closeBtn = document.getElementById('closeChatWidgetBtn');
-        const chatWindow = document.getElementById('chatWidgetWindow');
-        const chatForm = document.getElementById('chatWidgetForm');
-        const chatInput = document.getElementById('chatWidgetInput');
-        const chatStream = document.getElementById('chatStream');
-        const sendBtn = document.getElementById('chatWidgetSendBtn');
+        const openBtn = document.getElementById('openChatBtn'), closeBtn = document.getElementById('closeChatBtn'), box = document.getElementById('chatBox');
+        const form = document.getElementById('chatForm'), input = document.getElementById('chatInput'), stream = document.getElementById('chatStream'), sendBtn = document.getElementById('chatSendBtn');
+        let history = [];
 
-        let chatHistory = [];
-
-        if (openBtn && chatWindow) {
-            openBtn.addEventListener('click', function () {
-                if (chatWindow.style.display === 'flex') {
-                    chatWindow.style.display = 'none';
-                } else {
-                    chatWindow.style.display = 'flex';
-                    chatInput.focus();
-                }
-            });
-
-            closeBtn.addEventListener('click', function () {
-                chatWindow.style.display = 'none';
-            });
+        if (openBtn && box) {
+            openBtn.onclick = () => { box.style.display = (box.style.display === 'flex' ? 'none' : 'flex'); if (box.style.display === 'flex') input.focus(); };
+            closeBtn.onclick = () => { box.style.display = 'none'; };
         }
-
-        window.sendQuickPrompt = function (text) {
-            chatInput.value = text;
-            chatForm.dispatchEvent(new Event('submit'));
-        };
-
-        if (chatForm) {
-            chatForm.addEventListener('submit', function (e) {
+        if (form) {
+            form.onsubmit = (e) => {
                 e.preventDefault();
-                const msg = chatInput.value.trim();
+                const msg = input.value.trim();
                 if (!msg) return;
 
-                // Add user bubble
-                const userDiv = document.createElement('div');
-                userDiv.className = 'chat-bubble chat-bubble-user';
-                userDiv.textContent = msg;
-                chatStream.appendChild(userDiv);
-                chatInput.value = '';
-                chatStream.scrollTop = chatStream.scrollHeight;
+                const uBubble = document.createElement('div');
+                uBubble.className = 'chat-bubble bubble-user';
+                uBubble.textContent = msg;
+                stream.appendChild(uBubble);
+                input.value = '';
+                stream.scrollTop = stream.scrollHeight;
 
-                // Add loading indicator
-                const botDiv = document.createElement('div');
-                botDiv.className = 'chat-bubble chat-bubble-bot';
-                botDiv.innerHTML = '<span class="spinner-grow spinner-grow-sm text-primary" role="status"></span> <span class="small text-muted ms-1">Thinking...</span>';
-                chatStream.appendChild(botDiv);
-                chatStream.scrollTop = chatStream.scrollHeight;
-
+                const bBubble = document.createElement('div');
+                bBubble.className = 'chat-bubble bubble-bot';
+                bBubble.textContent = 'Thinking...';
+                stream.appendChild(bBubble);
                 sendBtn.disabled = true;
 
                 fetch("{% url 'app:api_chat_bot' %}", {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify({
-                        message: msg,
-                        history: chatHistory
-                    })
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+                    body: JSON.stringify({ message: msg, history: history })
                 })
-                .then(res => res.json())
-                .then(data => {
+                .then(r => r.json())
+                .then(d => {
                     sendBtn.disabled = false;
-                    if (data.reply) {
-                        // Clean linebreaks for display
-                        botDiv.innerHTML = data.reply.replace(/\n/g, '<br>');
-                        chatHistory.push({ role: 'user', content: msg });
-                        chatHistory.push({ role: 'assistant', content: data.reply });
-                    } else if (data.error) {
-                        botDiv.innerHTML = `<span class="text-danger small">Error: ${data.error}</span>`;
+                    bBubble.innerHTML = (d.reply || d.error || 'No response').replace(/\n/g, '<br>');
+                    if (d.reply) {
+                        history.push({ role: 'user', content: msg });
+                        history.push({ role: 'assistant', content: d.reply });
                     }
-                    chatStream.scrollTop = chatStream.scrollHeight;
+                    stream.scrollTop = stream.scrollHeight;
                 })
-                .catch(err => {
+                .catch(() => {
                     sendBtn.disabled = false;
-                    botDiv.innerHTML = `<span class="text-danger small">Connection error. Please try again.</span>`;
-                    console.error(err);
+                    bBubble.textContent = 'Connection error. Please try again.';
                 });
-            });
+            };
         }
     });
     </script>
     {% endif %}
-
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

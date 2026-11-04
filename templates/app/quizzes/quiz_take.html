@@ -1,34 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}Examination Mode: {{ quiz.title }} (Strictly 20 Questions) - scemquiz.arena{% endblock %}
+{% block title %}Quiz: {{ quiz.title }} (20 Qs) - scemquiz.arena{% endblock %}
 
 {% block extra_head %}
 <style>
-    .timer-sticky {
+    .timer-bar {
         position: sticky;
-        top: 72px;
+        top: 60px;
         z-index: 1020;
-        background: #0b0f19;
-        color: #f8fafc;
-        border-radius: 14px;
-        padding: 12px 24px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-        border: 1px solid rgba(255,255,255,0.1);
+        background: #ffffff;
+        border: 2px solid var(--purple-border);
+        border-radius: 12px;
+        padding: 10px 16px;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
     }
-    .timer-val {
-        font-family: 'Space Grotesk', monospace;
-        font-size: 1.5rem;
+    .timer-num {
+        font-family: monospace;
+        font-size: 1.35rem;
         font-weight: 800;
-        color: #38bdf8;
-    }
-    .anti-cheat-pill {
-        background: rgba(239, 68, 68, 0.2);
-        border: 1px solid rgba(239, 68, 68, 0.4);
-        color: #fca5a5;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
+        color: var(--purple-primary);
     }
 </style>
 {% endblock %}
@@ -36,106 +26,69 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-9">
-
-        <!-- Anti-Cheat Status & Live Countdown Timer -->
-        <div class="timer-sticky mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <!-- Live Countdown & Anti-Cheat Header -->
+        <div class="timer-bar mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="anti-cheat-pill"><i class="bi bi-shield-lock-fill text-danger me-1"></i> Anti-Cheat Active</span>
-                    <span class="badge bg-secondary">Strictly 20 Questions</span>
-                </div>
-                <h5 class="fw-bold mb-0 text-white">{{ quiz.title }}</h5>
+                <span class="badge badge-purple-subtle mb-1"><i class="bi bi-shield-lock-fill text-danger me-1"></i>Anti-Cheat Active (20 Qs)</span>
+                <h6 class="fw-bold mb-0 text-dark">{{ quiz.title }}</h6>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <div class="text-md-end">
-                    <span class="text-white-50 small d-block" style="font-size: 0.75rem;">TIME REMAINING</span>
-                    <span id="timerClock" class="timer-val">20:00</span>
+                <div class="text-end">
+                    <span class="small text-muted d-block" style="font-size: 0.72rem;">TIME LEFT</span>
+                    <span id="timerClock" class="timer-num">20:00</span>
                 </div>
-                <button type="button" class="btn btn-danger btn-sm px-3" onclick="confirmSubmit();">
-                    Finish Test
-                </button>
+                <button type="button" class="btn btn-purple btn-sm" onclick="confirmSubmit();">Finish Test</button>
             </div>
         </div>
 
-        <!-- Anti-Cheat Alert Modal -->
-        <div class="modal fade" id="antiCheatModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <!-- Violation Modal -->
+        <div class="modal fade" id="antiCheatModal" tabindex="-1" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-danger border-2">
-                    <div class="modal-header bg-danger text-white py-3">
-                        <h5 class="modal-title fw-bold">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i> Anti-Cheat Violation Detected!
-                        </h5>
-                    </div>
-                    <div class="modal-body p-4 text-center">
-                        <div class="display-4 text-danger mb-2"><i class="bi bi-eye-slash-fill"></i></div>
-                        <h5 class="fw-bold text-dark mb-2">Tab Switch or Window Blur Detected</h5>
-                        <p class="text-muted small mb-3">
-                            You switched to another browser tab or navigated away from the active examination window. 
-                            Opening background activities, other tabs, or searching outside this test is strictly prohibited.
-                        </p>
-                        <div class="alert alert-warning py-2 small fw-bold">
-                            Violation Warning: <span id="violationCountDisplay" class="text-danger">1</span> of 3.<br>
-                            At 3 violations, your assessment will be immediately terminated and force-submitted!
-                        </div>
-                        <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal" id="resumeTestBtn">
-                            I Understand &bull; Resume Assessment
-                        </button>
-                    </div>
+                <div class="modal-content border-danger border-2 text-center p-4">
+                    <h5 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Tab Switch Detected!</h5>
+                    <p class="text-muted small mb-3">Switching tabs, windows, or background activities is strictly prohibited during the assessment.</p>
+                    <div class="alert alert-warning py-1 small fw-bold">Warning <span id="violationCountDisplay">1</span> of 3. Assessment terminates on 3rd violation.</div>
+                    <button type="button" class="btn btn-danger btn-sm px-4 mt-2" data-bs-dismiss="modal">Resume Test</button>
                 </div>
             </div>
         </div>
 
-        <!-- Main 20-Question Form -->
         <form method="post" id="quizForm">
             {% csrf_token %}
             <input type="hidden" name="time_taken" id="timeTakenInput" value="0">
             <input type="hidden" name="tab_switch_violations" id="tabViolationsInput" value="0">
 
             {% for q in questions %}
-                <div class="card mb-4 shadow-sm border-0">
-                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                        <span class="fw-bold text-dark">
-                            <span class="badge bg-dark me-2">Q {{ forloop.counter }} / 20</span>
-                            {{ q.title }}
-                        </span>
-                        <div>
-                            {% if q.subject == 'JAPANESE' %}
-                                <span class="badge badge-zenken-exclusive">🇯🇵 Japanese</span>
-                            {% else %}
-                                <span class="badge bg-light text-dark border">{{ q.get_topic_display }}</span>
-                            {% endif %}
-                        </div>
+                <div class="card mb-3 p-3 bg-white">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge badge-purple-subtle">Q {{ forloop.counter }} / 20</span>
+                        <span class="small text-muted">{{ q.get_topic_display }}</span>
                     </div>
+                    <p class="fw-semibold text-dark mb-3">{{ q.question_text }}</p>
 
-                    <div class="card-body p-4">
-                        <p class="fs-6 mb-4 text-dark" style="white-space: pre-wrap; line-height: 1.6;">{{ q.question_text }}</p>
-
-                        <div class="list-group">
-                            <label class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-3">
-                                <input class="form-check-input flex-shrink-0" type="radio" name="q_{{ q.pk }}" value="A">
-                                <div><strong class="me-2 text-primary">A.</strong> {{ q.option_a }}</div>
-                            </label>
-                            <label class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-3">
-                                <input class="form-check-input flex-shrink-0" type="radio" name="q_{{ q.pk }}" value="B">
-                                <div><strong class="me-2 text-primary">B.</strong> {{ q.option_b }}</div>
-                            </label>
-                            <label class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-3">
-                                <input class="form-check-input flex-shrink-0" type="radio" name="q_{{ q.pk }}" value="C">
-                                <div><strong class="me-2 text-primary">C.</strong> {{ q.option_c }}</div>
-                            </label>
-                            <label class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-3">
-                                <input class="form-check-input flex-shrink-0" type="radio" name="q_{{ q.pk }}" value="D">
-                                <div><strong class="me-2 text-primary">D.</strong> {{ q.option_d }}</div>
-                            </label>
-                        </div>
+                    <div class="d-flex flex-column gap-2">
+                        <label class="p-2 rounded border d-flex align-items-center gap-2 cursor-pointer bg-light">
+                            <input type="radio" name="q_{{ q.pk }}" value="A" class="form-check-input">
+                            <span class="small"><strong>A.</strong> {{ q.option_a }}</span>
+                        </label>
+                        <label class="p-2 rounded border d-flex align-items-center gap-2 cursor-pointer bg-light">
+                            <input type="radio" name="q_{{ q.pk }}" value="B" class="form-check-input">
+                            <span class="small"><strong>B.</strong> {{ q.option_b }}</span>
+                        </label>
+                        <label class="p-2 rounded border d-flex align-items-center gap-2 cursor-pointer bg-light">
+                            <input type="radio" name="q_{{ q.pk }}" value="C" class="form-check-input">
+                            <span class="small"><strong>C.</strong> {{ q.option_c }}</span>
+                        </label>
+                        <label class="p-2 rounded border d-flex align-items-center gap-2 cursor-pointer bg-light">
+                            <input type="radio" name="q_{{ q.pk }}" value="D" class="form-check-input">
+                            <span class="small"><strong>D.</strong> {{ q.option_d }}</span>
+                        </label>
                     </div>
                 </div>
             {% endfor %}
 
             <div class="text-center py-4">
-                <button type="button" class="btn btn-arena btn-lg px-5 shadow" onclick="confirmSubmit();">
-                    <i class="bi bi-check-circle-fill me-2"></i> Submit Answers &bull; Complete 20-Q Quiz
-                </button>
+                <button type="button" class="btn btn-purple btn-lg px-5" onclick="confirmSubmit();">Submit 20-Question Test</button>
             </div>
         </form>
     </div>
@@ -145,81 +98,33 @@
 {% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const durationMinutes = {{ quiz.duration_minutes }};
-    let totalSeconds = durationMinutes * 60;
-    let secondsElapsed = 0;
-    let tabViolations = 0;
-    const maxViolations = 3;
+    let timeLeft = {{ quiz.duration_minutes }} * 60, elapsed = 0, violations = 0;
+    const clock = document.getElementById('timerClock'), form = document.getElementById('quizForm');
+    const modal = new bootstrap.Modal(document.getElementById('antiCheatModal'));
 
-    const timerClock = document.getElementById('timerClock');
-    const timeTakenInput = document.getElementById('timeTakenInput');
-    const tabViolationsInput = document.getElementById('tabViolationsInput');
-    const quizForm = document.getElementById('quizForm');
-    const antiCheatModal = new bootstrap.Modal(document.getElementById('antiCheatModal'));
-    const violationCountDisplay = document.getElementById('violationCountDisplay');
+    function tick() {
+        if (timeLeft <= 0) { alert("Time is up! Submitting test..."); form.submit(); return; }
+        const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+        clock.textContent = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+        if (timeLeft < 180) clock.style.color = "#dc2626";
+        timeLeft--; elapsed++;
+        document.getElementById('timeTakenInput').value = elapsed;
+    }
+    tick(); setInterval(tick, 1000);
 
-    // 1. Live Countdown Timer
-    function updateClock() {
-        if (totalSeconds <= 0) {
-            alert("Time limit reached! Submitting your 20-question assessment automatically...");
-            timeTakenInput.value = secondsElapsed;
-            quizForm.submit();
-            return;
-        }
-
-        const mins = Math.floor(totalSeconds / 60);
-        const secs = totalSeconds % 60;
-        timerClock.textContent = (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
-
-        if (totalSeconds < 180) {
-            timerClock.style.color = "#ef4444";
-        }
-
-        totalSeconds--;
-        secondsElapsed++;
-        timeTakenInput.value = secondsElapsed;
+    function recordViolation() {
+        violations++;
+        document.getElementById('tabViolationsInput').value = violations;
+        document.getElementById('violationCountDisplay').textContent = violations;
+        if (violations >= 3) { alert("Terminated: 3/3 tab violations exceeded."); form.submit(); }
+        else { modal.show(); }
     }
 
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // 2. Anti-Cheat: Tab Switch & Window Blur Detection
-    function handleViolation() {
-        tabViolations++;
-        tabViolationsInput.value = tabViolations;
-        violationCountDisplay.textContent = tabViolations;
-
-        if (tabViolations >= maxViolations) {
-            alert("TEST TERMINATED: You have exceeded the maximum allowed tab switches (3/3). Your assessment is being force-submitted.");
-            quizForm.submit();
-        } else {
-            antiCheatModal.show();
-        }
-    }
-
-    document.addEventListener('visibilitychange', function () {
-        if (document.hidden) {
-            handleViolation();
-        }
-    });
-
-    window.addEventListener('blur', function () {
-        // Only trigger if modal is not currently open
-        if (!document.getElementById('antiCheatModal').classList.contains('show')) {
-            handleViolation();
-        }
-    });
-
-    // 3. Disable right-click & copy during test
-    document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) recordViolation(); });
+    window.addEventListener('blur', () => { if (!document.getElementById('antiCheatModal').classList.contains('show')) recordViolation(); });
 
     window.confirmSubmit = function () {
-        if (confirm("Are you ready to submit your 20 answers and finalize your score?")) {
-            timeTakenInput.value = secondsElapsed;
-            quizForm.submit();
-        }
+        if (confirm("Are you ready to submit your 20 answers?")) form.submit();
     };
 });
 </script>

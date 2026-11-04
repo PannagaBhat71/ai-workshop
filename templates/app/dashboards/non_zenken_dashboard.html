@@ -1,79 +1,73 @@
 {% extends 'base.html' %}
 
-{% block title %}Student Dashboard - Zenken Academy{% endblock %}
+{% block title %}Student Dashboard - scemquiz.arena{% endblock %}
 
 {% block content %}
-<!-- Student Profile Banner -->
-<div class="card mb-4 bg-dark text-white border-0 shadow">
-    <div class="card-body p-4">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge bg-info text-dark px-3 py-1 fw-bold">
-                        <i class="bi bi-person-badge me-1"></i> Student Scholar
-                    </span>
-                    <span class="badge bg-secondary">
-                        Target: {{ profile.target_exam_or_goal|default:"Aptitude & Placements" }}
-                    </span>
+<!-- Large Gradient Greeting -->
+<div class="mb-4">
+    <h1 class="display-4 fw-bold text-gradient-purple mb-1">
+        Welcome back, {{ user.first_name|default:user.username }}! 👋
+    </h1>
+    <p class="text-muted fs-5 mb-0">Quantitative Aptitude &amp; Placement Preparation Arena</p>
+</div>
+
+<!-- Profile & Streak Summary -->
+<div class="row g-3 mb-4">
+    <div class="col-md-8">
+        <div class="card p-3 h-100 bg-white">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <span class="badge badge-purple-subtle mb-2">Student Scholar</span>
+                    <h5 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted small mb-0">{{ profile.institution_name }} &bull; Class of {{ profile.graduation_year|default:"2026" }} &bull; Target: <strong>{{ profile.target_exam_or_goal|default:"Placements" }}</strong></p>
                 </div>
-                <h2 class="fw-bold mb-1">Welcome, {{ user.get_full_name|default:user.username }}!</h2>
-                <p class="mb-0 text-white-50">
-                    <i class="bi bi-building me-1"></i> {{ profile.institution_name }} &bull;
-                    <i class="bi bi-calendar-event me-1"></i> Class of {{ profile.graduation_year|default:"2026" }}
-                </p>
+                <a href="{% url 'app:topic_practice_rooms' %}" class="btn btn-purple btn-sm">Enter Practice Rooms &rarr;</a>
             </div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a href="{% url 'app:question_list' %}" class="btn btn-outline-light">
-                    <i class="bi bi-puzzle me-1"></i> Start Practice
-                </a>
-            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 h-100 bg-white text-center">
+            <span class="text-muted small">Daily Practice Streak</span>
+            <div class="fs-2 fw-bold text-gradient-purple">🔥 {{ streak.current_streak|default:0 }} Days</div>
+            <span class="small text-muted">{{ streak.total_points|default:0 }} Total Points Earned</span>
         </div>
     </div>
 </div>
 
-<!-- Promo card for Zenken enrollment -->
-<div class="alert alert-danger shadow-sm border-danger-subtle d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 p-3 rounded-3">
-    <div>
-        <h6 class="fw-bold text-danger mb-1">
-            <i class="bi bi-stars me-1"></i> Upgrade to Zenken Enrolled Track
-        </h6>
-        <p class="mb-0 small text-muted">
-            Enrolled Zenken students get direct recruitment opportunities in Japanese tech companies, advanced aptitude tests, and Japanese language coaching.
-        </p>
-    </div>
-    <div class="mt-2 mt-md-0">
-        <a href="{% url 'app:update_list' %}" class="btn btn-sm btn-danger text-nowrap">Learn More</a>
+<!-- Quick Actions & Track Info -->
+<div class="card mb-4 p-3 bg-white border">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h6 class="fw-bold text-purple mb-1"><i class="bi bi-star-fill text-warning me-1"></i>Explore Zenken Japan Career Track</h6>
+            <p class="text-muted small mb-0">Interested in Japanese tech recruitment drives? Japanese practice modules &amp; quizzes are exclusive to enrolled Zenken scholars.</p>
+        </div>
+        <a href="{% url 'app:opportunity_list' %}" class="btn btn-outline-purple btn-sm">View Opportunities</a>
     </div>
 </div>
 
 <div class="row g-4">
-    <!-- Aptitude Question Stream -->
+    <!-- Aptitude Question Bank -->
     <div class="col-lg-7">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-puzzle me-2 text-primary"></i>Quantitative Aptitude Practice Bank</span>
-                <a href="{% url 'app:question_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                <span><i class="bi bi-calculator text-purple me-2"></i>Quantitative Aptitude Bank</span>
+                <a href="{% url 'app:question_list' %}" class="btn btn-outline-purple btn-sm py-0">View All</a>
             </div>
             <div class="card-body p-0">
-                {% if questions %}
-                    <div class="list-group list-group-flush">
-                        {% for q in questions %}
-                            <a href="{% url 'app:question_detail' q.pk %}" class="list-group-item list-group-item-action p-3">
-                                <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <h6 class="fw-bold mb-0 text-dark">{{ q.title }}</h6>
-                                    <span class="badge bg-light text-dark border small">{{ q.get_difficulty_display }}</span>
-                                </div>
-                                <p class="text-muted small mb-2 text-truncate">{{ q.question_text }}</p>
-                                <span class="badge bg-light text-secondary border small">{{ q.get_topic_display }}</span>
-                            </a>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="text-center py-5 text-muted">
-                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                        No practice questions available right now.
-                    </div>
-                {% endif %}
+                <div class="list-group list-group-flush">
+                    {% for q in questions %}
+                        <a href="{% url 'app:question_detail' q.pk %}" class="list-group-item list-group-item-action p-3">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold mb-1 text-dark">{{ q.title }}</h6>
+                                <span class="badge badge-purple-subtle">{{ q.get_difficulty_display }}</span>
+                            </div>
+                            <p class="text-muted small mb-1 text-truncate">{{ q.question_text }}</p>
+                            <span class="badge bg-light text-secondary border small">{{ q.get_topic_display }}</span>
+                        </a>
+                    {% empty %}
+                        <div class="text-center py-4 text-muted small">No questions available right now.</div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
@@ -82,33 +76,23 @@
     <div class="col-lg-5">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-megaphone me-2 text-info"></i>Academy Notices</span>
-                <a href="{% url 'app:update_list' %}" class="btn btn-sm btn-outline-dark">All Notices</a>
+                <span><i class="bi bi-megaphone text-purple me-2"></i>Academy Notices</span>
+                <a href="{% url 'app:update_list' %}" class="btn btn-outline-purple btn-sm py-0">All Notices</a>
             </div>
-            <div class="card-body p-3">
-                {% if updates %}
-                    <div class="list-group list-group-flush">
-                        {% for update in updates %}
-                            <div class="list-group-item px-0 py-3">
-                                <h6 class="fw-bold mb-1 text-dark">
-                                    {% if update.is_pinned %}<i class="bi bi-pin-angle-fill text-danger me-1"></i>{% endif %}
-                                    {{ update.title }}
-                                </h6>
-                                <span class="badge bg-light text-secondary border small mb-2">{{ update.get_category_display }}</span>
-                                <p class="text-muted small mb-1">{{ update.content|truncatewords:20 }}</p>
-                                <span class="text-secondary small" style="font-size: 0.75rem;">{{ update.created_at|date:"M d, Y" }}</span>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="text-center py-5 text-muted">
-                        <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
-                        No academy notices at the moment.
-                    </div>
-                {% endif %}
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for up in updates %}
+                        <div class="list-group-item p-3">
+                            <h6 class="fw-bold mb-1 text-dark">{{ up.title }}</h6>
+                            <p class="text-muted small mb-1">{{ up.content|truncatewords:20 }}</p>
+                            <span class="small text-muted">{{ up.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-4 text-muted small">No notices posted.</div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

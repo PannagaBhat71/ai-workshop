@@ -1,164 +1,62 @@
 {% extends 'base.html' %}
 
-{% block title %}Arena AI Mentor &amp; Tutor (Powered by Groq) - scemquiz.arena{% endblock %}
-
-{% block extra_head %}
-<style>
-    .ai-chat-card {
-        border-radius: 18px;
-        background: #ffffff;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-        border: 1px solid #e2e8f0;
-        height: 680px;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-    .ai-chat-header {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-        color: white;
-        padding: 18px 24px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .ai-messages-area {
-        flex: 1;
-        padding: 24px;
-        overflow-y: auto;
-        background: #f8fafc;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-    .ai-msg-bubble {
-        max-width: 80%;
-        padding: 14px 18px;
-        border-radius: 16px;
-        line-height: 1.6;
-        font-size: 0.95rem;
-    }
-    .ai-msg-user {
-        background: #4f46e5;
-        color: white;
-        align-self: flex-end;
-        border-bottom-right-radius: 4px;
-        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
-    }
-    .ai-msg-bot {
-        background: #ffffff;
-        color: #1e293b;
-        border: 1px solid #e2e8f0;
-        align-self: flex-start;
-        border-bottom-left-radius: 4px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-    }
-    .prompt-card {
-        border-radius: 14px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .prompt-card:hover {
-        transform: translateY(-3px);
-        border-color: #6366f1;
-        box-shadow: 0 6px 18px rgba(99, 102, 241, 0.12);
-    }
-</style>
-{% endblock %}
+{% block title %}AI Tutor Studio - scemquiz.arena{% endblock %}
 
 {% block content %}
 <div class="row align-items-center mb-4">
     <div class="col-md-8">
-        <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-bold mb-2 border border-primary-subtle">
-            <i class="bi bi-cpu me-1"></i> Powered by Groq Llama/Qwen Intelligence
-        </span>
-        <h2 class="fw-bold mb-1">
-            <i class="bi bi-robot text-primary me-2"></i>Arena AI Tutor &amp; Career Mentor
+        <h2 class="fw-bold text-gradient-purple mb-1">
+            <i class="bi bi-robot text-purple me-2"></i>Arena AI Tutor &amp; Mentor
         </h2>
-        <p class="text-muted mb-0">Ask any aptitude problem, Japanese language question, or placement query. Get instant step-by-step guidance.</p>
+        <p class="text-muted small mb-0">Ask aptitude formulas, Japanese grammar queries, or campus placement advice.</p>
     </div>
-    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-        <span class="badge bg-success px-3 py-2 fs-6">
-            <i class="bi bi-circle-fill me-1" style="font-size: 0.6rem;"></i> Groq Engine Online
-        </span>
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <span class="badge badge-purple"><i class="bi bi-cpu me-1"></i>Groq Engine Online</span>
     </div>
 </div>
 
 <div class="row g-4">
-    <!-- Suggested Prompts Sidebar -->
+    <!-- Prompts -->
     <div class="col-lg-4">
-        <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-magic me-2"></i>Quick Guidance Prompts</h5>
-
-        <div class="d-flex flex-column gap-3 mb-4">
-            <div class="prompt-card p-3 shadow-sm" onclick="sendPrompt('Explain the shortcut formula for Time and Work problems where workers join or leave midway.')">
-                <div class="fw-bold text-primary mb-1"><i class="bi bi-hourglass-split me-1"></i> Time &amp; Work Efficiency</div>
-                <div class="small text-muted">Learn how to convert days into rates and solve complex worker departures in under 60 seconds.</div>
+        <div class="card p-3 mb-3 bg-white border">
+            <h6 class="fw-bold text-purple mb-3">Quick Prompts</h6>
+            <div class="d-flex flex-column gap-2">
+                <button type="button" class="btn btn-outline-purple btn-sm text-start" onclick="sendPrompt('Explain the shortcut formula for Time and Work problems where workers leave midway.')">
+                    ⏱️ Time &amp; Work Efficiency Formula
+                </button>
+                <button type="button" class="btn btn-outline-purple btn-sm text-start" onclick="sendPrompt('Explain how to find remainders of large exponents using remainder theorem.')">
+                    📐 Remainder Theorem Shortcut
+                </button>
+                {% if user.is_zenken_student or user.is_teacher %}
+                    <button type="button" class="btn btn-purple btn-sm text-start" onclick="sendPrompt('Explain the difference between Japanese particles は and が with examples.')">
+                        🇯🇵 は vs が Particle Grammar
+                    </button>
+                {% endif %}
+                <button type="button" class="btn btn-outline-purple btn-sm text-start" onclick="sendPrompt('What are top 5 aptitude topics tested in campus placement rounds?')">
+                    💼 Placement Screening Tips
+                </button>
             </div>
-
-            <div class="prompt-card p-3 shadow-sm" onclick="sendPrompt('Explain how to find remainder of large exponents like (17^23 + 23^23) / 40 using remainder theorem.')">
-                <div class="fw-bold text-success mb-1"><i class="bi bi-123 me-1"></i> Remainder Theorem Shortcuts</div>
-                <div class="small text-muted">Master Euler totient and odd-power algebraic identities for number systems.</div>
-            </div>
-
-            {% if user.is_zenken_student or user.is_teacher %}
-                <div class="prompt-card p-3 shadow-sm border-danger-subtle" onclick="sendPrompt('Explain the difference between Japanese particles は (wa) and が (ga) with natural sentence examples.')">
-                    <div class="fw-bold text-danger mb-1">🇯🇵 JLPT N4: は vs が Particles</div>
-                    <div class="small text-muted">Topic marker vs Subject marker rules for Japanese interviews and JLPT.</div>
-                </div>
-            {% endif %}
-
-            <div class="prompt-card p-3 shadow-sm" onclick="sendPrompt('What are top 5 quantitative aptitude topics tested in campus placement screening tests?')">
-                <div class="fw-bold text-info-emphasis mb-1"><i class="bi bi-briefcase me-1"></i> Placement Screening Focus</div>
-                <div class="small text-muted">Identify high-yield aptitude areas to focus on for 2026 batch recruitment.</div>
-            </div>
-        </div>
-
-        <div class="card p-3 border-0 bg-light rounded-3 small text-muted">
-            <h6 class="fw-bold text-dark mb-1"><i class="bi bi-shield-check text-success me-1"></i>Personalized Guidance</h6>
-            The AI tutor tailors responses to your profile: <strong>{{ user.get_role_display }}</strong> &bull; Sahyadri College of Engineering.
         </div>
     </div>
 
-    <!-- Main Chat Window -->
+    <!-- Chat Studio -->
     <div class="col-lg-8">
-        <div class="ai-chat-card">
-            <div class="ai-chat-header d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="bg-primary rounded-circle p-2 text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                        <i class="bi bi-robot fs-5"></i>
-                    </div>
-                    <div>
-                        <h6 class="fw-bold mb-0 text-white">Arena AI Mentor Studio</h6>
-                        <small class="text-white-50" style="font-size: 0.75rem;">Interactive Assessment &amp; Placement Partner</small>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-outline-light btn-sm" id="clearChatHistoryBtn">
-                    <i class="bi bi-trash me-1"></i> Clear Chat
-                </button>
+        <div class="card bg-white border" style="height: 560px; display: flex; flex-direction: column;">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                <span class="fw-bold text-purple"><i class="bi bi-stars me-1"></i>Interactive AI Tutor Studio</span>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="clearBtn">Clear</button>
             </div>
 
-            <!-- Messages Stream -->
-            <div class="ai-messages-area" id="mainChatStream">
-                <div class="ai-msg-bubble ai-msg-bot">
-                    <h6 class="fw-bold text-primary mb-1">👋 Welcome to Arena AI Mentor, {{ user.first_name|default:user.username }}!</h6>
-                    <p class="mb-2">
-                        I am your dedicated AI Tutor powered by Groq. You can ask me to solve any quantitative problem step-by-step, give mathematical shortcuts, explain Japanese grammar points, or advise on upcoming placement drives!
-                    </p>
-                    <div class="small text-muted">
-                        <em>Try asking: "Solve: If a train 240 m long crosses a 260 m platform in 25 seconds, what is its speed in km/h?"</em>
-                    </div>
+            <div class="flex-grow-1 p-3 overflow-auto d-flex flex-column gap-2" id="studioStream">
+                <div class="p-3 rounded border bg-light small" style="max-width: 85%;">
+                    Hello <strong>{{ user.first_name|default:user.username }}</strong>! I am your AI Mentor powered by Groq. Ask me to solve any quantitative problem step-by-step or explain Japanese grammar!
                 </div>
             </div>
 
-            <!-- Input Bar -->
-            <div class="p-3 bg-white border-top">
-                <form id="mainChatForm" class="d-flex gap-2">
-                    <input type="text" id="mainChatInput" class="form-control form-control-lg" placeholder="Type your aptitude question or placement doubt..." autocomplete="off">
-                    <button type="submit" class="btn btn-arena px-4" id="mainChatSendBtn">
-                        <i class="bi bi-send-fill me-1"></i> Send
-                    </button>
-                </form>
-            </div>
+            <form id="studioForm" class="p-3 border-top bg-white d-flex gap-2">
+                <input type="text" id="studioInput" class="form-control" placeholder="Ask question, math trick, or grammar..." autocomplete="off">
+                <button type="submit" class="btn btn-purple px-4" id="studioSendBtn"><i class="bi bi-send-fill"></i></button>
+            </form>
         </div>
     </div>
 </div>
@@ -167,86 +65,55 @@
 {% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const chatForm = document.getElementById('mainChatForm');
-    const chatInput = document.getElementById('mainChatInput');
-    const chatStream = document.getElementById('mainChatStream');
-    const sendBtn = document.getElementById('mainChatSendBtn');
-    const clearBtn = document.getElementById('clearChatHistoryBtn');
-
+    const form = document.getElementById('studioForm'), input = document.getElementById('studioInput');
+    const stream = document.getElementById('studioStream'), sendBtn = document.getElementById('studioSendBtn');
+    const clearBtn = document.getElementById('clearBtn');
     let history = [];
 
-    window.sendPrompt = function (text) {
-        chatInput.value = text;
-        chatForm.dispatchEvent(new Event('submit'));
-    };
+    window.sendPrompt = (t) => { input.value = t; form.dispatchEvent(new Event('submit')); };
+    clearBtn.onclick = () => { history = []; stream.innerHTML = '<div class="p-3 rounded border bg-light small">Chat cleared. Ask a new question!</div>'; };
 
-    clearBtn.addEventListener('click', function () {
-        history = [];
-        chatStream.innerHTML = `
-            <div class="ai-msg-bubble ai-msg-bot">
-                <h6 class="fw-bold text-primary mb-1">Chat Cleared</h6>
-                <p class="mb-0">How can I assist you with your placement preparation today?</p>
-            </div>
-        `;
-    });
-
-    chatForm.addEventListener('submit', function (e) {
+    form.onsubmit = (e) => {
         e.preventDefault();
-        const msg = chatInput.value.trim();
+        const msg = input.value.trim();
         if (!msg) return;
 
-        // User bubble
-        const userBubble = document.createElement('div');
-        userBubble.className = 'ai-msg-bubble ai-msg-user';
-        userBubble.textContent = msg;
-        chatStream.appendChild(userBubble);
-        chatInput.value = '';
-        chatStream.scrollTop = chatStream.scrollHeight;
+        const uDiv = document.createElement('div');
+        uDiv.className = 'p-3 rounded bg-purple text-white align-self-end small';
+        uDiv.style.backgroundColor = 'var(--purple-primary)';
+        uDiv.style.maxWidth = '85%';
+        uDiv.textContent = msg;
+        stream.appendChild(uDiv);
+        input.value = '';
+        stream.scrollTop = stream.scrollHeight;
 
-        // Bot loading bubble
-        const botBubble = document.createElement('div');
-        botBubble.className = 'ai-msg-bubble ai-msg-bot';
-        botBubble.innerHTML = '<div class="d-flex align-items-center gap-2"><div class="spinner-border spinner-border-sm text-primary" role="status"></div><span>Formulating step-by-step solution...</span></div>';
-        chatStream.appendChild(botBubble);
-        chatStream.scrollTop = chatStream.scrollHeight;
-
+        const bDiv = document.createElement('div');
+        bDiv.className = 'p-3 rounded border bg-white small align-self-start';
+        bDiv.style.maxWidth = '85%';
+        bDiv.textContent = 'Formulating step-by-step solution...';
+        stream.appendChild(bDiv);
         sendBtn.disabled = true;
 
         fetch("{% url 'app:api_chat_bot' %}", {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                message: msg,
-                history: history
-            })
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+            body: JSON.stringify({ message: msg, history: history })
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(r => r.json())
+        .then(d => {
             sendBtn.disabled = false;
-            if (data.reply) {
-                // Convert linebreaks and markdown bolding
-                let formatted = data.reply
-                    .replace(/\n\n/g, '<br><br>')
-                    .replace(/\n/g, '<br>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                botBubble.innerHTML = formatted;
+            bDiv.innerHTML = (d.reply || d.error || 'No response').replace(/\n/g, '<br>');
+            if (d.reply) {
                 history.push({ role: 'user', content: msg });
-                history.push({ role: 'assistant', content: data.reply });
-            } else if (data.error) {
-                botBubble.innerHTML = `<span class="text-danger fw-bold">Error: ${data.error}</span>`;
+                history.push({ role: 'assistant', content: d.reply });
             }
-            chatStream.scrollTop = chatStream.scrollHeight;
+            stream.scrollTop = stream.scrollHeight;
         })
-        .catch(err => {
+        .catch(() => {
             sendBtn.disabled = false;
-            botBubble.innerHTML = `<span class="text-danger">Network error contacting Groq service. Please try again.</span>`;
-            console.error(err);
+            bDiv.textContent = 'Error contacting service. Please retry.';
         });
-    });
+    };
 });
 </script>
 {% endblock %}
-

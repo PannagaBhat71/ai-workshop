@@ -2,211 +2,78 @@
 
 {% block title %}Leaderboard &amp; Streak Board - scemquiz.arena{% endblock %}
 
-{% block extra_head %}
-<style>
-    .streak-badge {
-        background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
-        color: white;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 20px;
-        box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
-    }
-    .rank-circle {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-    }
-    .rank-1 { background: #fef08a; color: #854d0e; border: 2px solid #eab308; }
-    .rank-2 { background: #e2e8f0; color: #475569; border: 2px solid #94a3b8; }
-    .rank-3 { background: #fed7aa; color: #9a3412; border: 2px solid #f97316; }
-    .podium-card {
-        border-radius: 16px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        transition: transform 0.2s;
-    }
-    .podium-card:hover { transform: translateY(-4px); }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="row align-items-center mb-4">
     <div class="col-md-8">
-        <span class="badge bg-warning-subtle text-warning-emphasis px-3 py-1 rounded-pill fw-bold mb-2 border border-warning-subtle">
-            <i class="bi bi-fire text-danger me-1"></i> Student Activity &amp; Consistency Rankings
-        </span>
-        <h2 class="fw-bold mb-1">
+        <h2 class="fw-bold text-gradient-purple mb-1">
             <i class="bi bi-trophy-fill text-warning me-2"></i>Arena Leaderboard &amp; Streak Board
         </h2>
-        <p class="text-muted mb-0">Compete with Sahyadri engineers and Zenken scholars. Solve questions, ace timed quizzes, and maintain your daily streak!</p>
+        <p class="text-muted small mb-0">Track practice streaks, points, and ranks across all Sahyadri students.</p>
     </div>
-    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-        <a href="{% url 'app:topic_practice_rooms' %}" class="btn btn-arena">
-            <i class="bi bi-lightning-charge me-1"></i> Earn Streak Points
-        </a>
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <a href="{% url 'app:topic_practice_rooms' %}" class="btn btn-purple btn-sm">Earn Streak Points &rarr;</a>
     </div>
 </div>
 
-<!-- Personal Streak Banner (For Students) -->
 {% if my_streak %}
-    <div class="card mb-4 bg-dark text-white border-0 shadow">
-        <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="fs-1">🔥</div>
-                <div>
-                    <h5 class="fw-bold mb-1">Your Learning Streak: <span class="text-warning">{{ my_streak.current_streak }} Days Active</span></h5>
-                    <p class="mb-0 text-white-50 small">
-                        Total Arena Points: <strong>{{ my_streak.total_points }} pts</strong> &bull;
-                        Quizzes Taken: <strong>{{ my_streak.quizzes_completed }}</strong> &bull;
-                        Questions Practiced: <strong>{{ my_streak.practice_completed }}</strong> &bull;
-                        Best Streak: <strong>{{ my_streak.longest_streak }} Days</strong>
-                    </p>
-                </div>
+    <div class="card p-3 mb-4 bg-white border">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <span class="badge badge-purple mb-1">Your Performance</span>
+                <h6 class="fw-bold mb-0">Active Streak: <span class="text-purple">🔥 {{ my_streak.current_streak }} Days</span> &bull; {{ my_streak.total_points }} Points</h6>
             </div>
-            <div class="text-md-end">
-                <span class="badge bg-warning text-dark px-3 py-2 fw-bold">Keep Your Streak Alive Today!</span>
-            </div>
+            <span class="small text-muted">Quizzes: {{ my_streak.quizzes_completed }} &bull; Practice: {{ my_streak.practice_completed }}</span>
         </div>
     </div>
 {% endif %}
 
-<!-- Top Podium Highlights -->
-<div class="row g-3 mb-4">
-    <div class="col-md-6 col-lg-3">
-        <div class="podium-card p-3 border-start border-4 border-warning">
-            <div class="text-muted small">🏆 Highest Total Points</div>
-            <div class="fs-4 fw-bold text-dark">{{ top_points_leader.student.first_name|default:top_points_leader.student.username|default:"N/A" }}</div>
-            <div class="text-warning fw-bold">{{ top_points_leader.total_points|default:0 }} Points</div>
+<!-- Filters -->
+<div class="card p-2 mb-3 bg-white border">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="btn-group btn-group-sm">
+            <a href="?cohort=all&sort={{ sort_by }}" class="btn {% if cohort_filter == 'all' %}btn-purple{% else %}btn-outline-purple{% endif %}">All</a>
+            <a href="?cohort=zenken&sort={{ sort_by }}" class="btn {% if cohort_filter == 'zenken' %}btn-purple{% else %}btn-outline-purple{% endif %}">Zenken</a>
+            <a href="?cohort=non_zenken&sort={{ sort_by }}" class="btn {% if cohort_filter == 'non_zenken' %}btn-purple{% else %}btn-outline-purple{% endif %}">Open Students</a>
         </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="podium-card p-3 border-start border-4 border-danger">
-            <div class="text-muted small">🔥 Longest Daily Streak</div>
-            <div class="fs-4 fw-bold text-dark">{{ top_streak_leader.student.first_name|default:top_streak_leader.student.username|default:"N/A" }}</div>
-            <div class="text-danger fw-bold">{{ top_streak_leader.longest_streak|default:0 }} Days Unbroken</div>
-        </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="podium-card p-3 border-start border-4 border-primary">
-            <div class="text-muted small">Daily Point Multiplier</div>
-            <div class="fs-4 fw-bold text-dark">+50 pts / Quiz</div>
-            <div class="text-primary small">+10 pts / Practice question</div>
-        </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="podium-card p-3 border-start border-4 border-success">
-            <div class="text-muted small">Active Cohorts</div>
-            <div class="fs-4 fw-bold text-dark">Zenken &amp; Open</div>
-            <div class="text-success small">Sahyadri Engineering</div>
+        <div class="btn-group btn-group-sm">
+            <a href="?cohort={{ cohort_filter }}&sort=points" class="btn {% if sort_by == 'points' %}btn-purple{% else %}btn-outline-purple{% endif %}">Points</a>
+            <a href="?cohort={{ cohort_filter }}&sort=streak" class="btn {% if sort_by == 'streak' %}btn-purple{% else %}btn-outline-purple{% endif %}">Streak 🔥</a>
         </div>
     </div>
 </div>
 
-<!-- Filter Tabs -->
-<div class="card p-3 mb-4 shadow-sm border-0">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div class="btn-group" role="group">
-            <a href="?cohort=all&sort={{ sort_by }}" class="btn btn-sm {% if cohort_filter == 'all' %}btn-dark{% else %}btn-outline-secondary{% endif %}">
-                All Scholars
-            </a>
-            <a href="?cohort=zenken&sort={{ sort_by }}" class="btn btn-sm {% if cohort_filter == 'zenken' %}btn-danger{% else %}btn-outline-danger{% endif %}">
-                🇯🇵 Zenken Enrolled
-            </a>
-            <a href="?cohort=non_zenken&sort={{ sort_by }}" class="btn btn-sm {% if cohort_filter == 'non_zenken' %}btn-info text-dark{% else %}btn-outline-info text-dark{% endif %}">
-                Open Track Students
-            </a>
-        </div>
-
-        <div class="btn-group" role="group">
-            <a href="?cohort={{ cohort_filter }}&sort=points" class="btn btn-sm {% if sort_by == 'points' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                Rank by Points
-            </a>
-            <a href="?cohort={{ cohort_filter }}&sort=streak" class="btn btn-sm {% if sort_by == 'streak' %}btn-warning text-dark fw-bold{% else %}btn-outline-warning text-dark{% endif %}">
-                🔥 Rank by Streak
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Leaderboard Table -->
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-white py-3">
-        <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-line-fill text-primary me-2"></i>Official Hall of Fame</h5>
-    </div>
-    <div class="card-body p-0">
-        {% if streaks %}
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light small">
-                        <tr>
-                            <th style="width: 70px;">Rank</th>
-                            <th>Student Scholar</th>
-                            <th>Cohort</th>
-                            <th>Current Streak</th>
-                            <th>Best Streak</th>
-                            <th>Quizzes Completed</th>
-                            <th>Questions Practiced</th>
-                            <th class="text-end">Arena Points</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in streaks %}
-                            <tr {% if item.student == user %}class="table-warning fw-bold"{% endif %}>
-                                <td>
-                                    {% if forloop.counter == 1 %}
-                                        <span class="rank-circle rank-1">🥇 1</span>
-                                    {% elif forloop.counter == 2 %}
-                                        <span class="rank-circle rank-2">🥈 2</span>
-                                    {% elif forloop.counter == 3 %}
-                                        <span class="rank-circle rank-3">🥉 3</span>
-                                    {% else %}
-                                        <span class="fw-bold text-muted ps-2">#{{ forloop.counter }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <strong>{{ item.student.get_full_name|default:item.student.username }}</strong>
-                                    {% if item.student == user %}<span class="badge bg-dark ms-1">You</span>{% endif %}
-                                    <div class="text-muted small">{{ item.student.email }}</div>
-                                </td>
-                                <td>
-                                    {% if item.student.is_zenken_student %}
-                                        <span class="badge badge-zenken-exclusive">Zenken</span>
-                                    {% else %}
-                                        <span class="badge bg-info text-dark">Student</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <span class="streak-badge">
-                                        🔥 {{ item.current_streak }} Days
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="text-muted fw-semibold">{{ item.longest_streak }} Days</span>
-                                </td>
-                                <td>{{ item.quizzes_completed }}</td>
-                                <td>{{ item.practice_completed }}</td>
-                                <td class="text-end">
-                                    <span class="fs-5 fw-bold text-primary">{{ item.total_points }}</span>
-                                    <span class="text-muted small">pts</span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="text-center py-5 text-muted">
-                <i class="bi bi-trophy fs-1 d-block mb-2"></i>
-                No activity records logged yet. Practice questions or complete quizzes to become the first on the leaderboard!
-            </div>
-        {% endif %}
+<!-- Table -->
+<div class="card p-0 bg-white border">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 small">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 60px;">Rank</th>
+                    <th>Student</th>
+                    <th>Cohort</th>
+                    <th>Streak</th>
+                    <th>Quizzes</th>
+                    <th class="text-end">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in streaks %}
+                    <tr {% if item.student == user %}class="table-warning fw-bold"{% endif %}>
+                        <td><strong>#{{ forloop.counter }}</strong></td>
+                        <td>
+                            <strong>{{ item.student.get_full_name|default:item.student.username }}</strong>
+                            {% if item.student == user %}<span class="badge bg-dark ms-1">You</span>{% endif %}
+                        </td>
+                        <td><span class="badge badge-purple-subtle">{{ item.student.get_role_display }}</span></td>
+                        <td><span class="text-danger fw-bold">🔥 {{ item.current_streak }}d</span></td>
+                        <td>{{ item.quizzes_completed }}</td>
+                        <td class="text-end fw-bold text-purple">{{ item.total_points }} pts</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center py-4 text-muted">No student records yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
-

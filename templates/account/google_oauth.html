@@ -5,61 +5,42 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white p-4 border-bottom text-center">
-                <div class="mb-2">
-                    <svg width="36" height="36" viewBox="0 0 48 48">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    </svg>
+        <div class="card p-4 bg-white border">
+            <div class="text-center mb-3">
+                <i class="bi bi-google fs-1 text-purple"></i>
+                <h4 class="fw-bold text-gradient-purple mt-2 mb-1">Google Workspace Sign-In</h4>
+                <p class="text-muted small">Restricted strictly to <strong>@sahyadri.edu.in</strong></p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Sahyadri Google Email <span class="text-danger">*</span></label>
+                    <input type="email" name="google_email" class="form-control" placeholder="name.branch26@sahyadri.edu.in" required>
+                    <div class="form-text small text-danger">Must end with @sahyadri.edu.in.</div>
                 </div>
-                <h4 class="fw-bold mb-1">Google Workspace Sign-In</h4>
-                <p class="text-muted small mb-0">Domain restricted strictly to <strong>@sahyadri.edu.in</strong></p>
-            </div>
 
-            <div class="card-body p-4 p-md-5">
-                <form method="post">
-                    {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Full Name</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="e.g. Student Name">
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Sahyadri Google Email <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="bi bi-envelope-at-fill"></i></span>
-                            <input type="email" name="google_email" class="form-control" placeholder="yourname.branch26@sahyadri.edu.in" required>
-                        </div>
-                        <div class="form-text small text-danger fw-semibold">
-                            Must end with @sahyadri.edu.in. External emails (e.g. @gmail.com) are rejected.
-                        </div>
-                    </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Track</label>
+                    <select name="role_type" class="form-select">
+                        <option value="NON_ZENKEN_STUDENT">Student (Quantitative Aptitude Track)</option>
+                        <option value="ZENKEN_STUDENT">Zenken Scholar (Japan Career Track)</option>
+                    </select>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Full Name (from Google Profile)</label>
-                        <input type="text" name="full_name" class="form-control" placeholder="e.g. Sahyadri Student">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">Select Enrolled Student Track</label>
-                        <select name="role_type" class="form-select">
-                            <option value="NON_ZENKEN_STUDENT">Non-Zenken Student (Quantitative Aptitude Track)</option>
-                            <option value="ZENKEN_STUDENT">Zenken Enrolled Scholar (Japan IT Placement Track)</option>
-                        </select>
-                    </div>
-
-                    <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-dark btn-lg">
-                            <i class="bi bi-shield-check me-2"></i> Verify Domain &amp; Authenticate
-                        </button>
-                    </div>
-
-                    <div class="text-center">
-                        <a href="{% url 'account:login' %}" class="small text-muted text-decoration-none">Cancel &bull; Back to Standard Login</a>
-                    </div>
-                </form>
-            </div>
+                <div class="d-grid mb-2">
+                    <button type="submit" class="btn btn-purple py-2">Verify &amp; Authenticate</button>
+                </div>
+                <div class="text-center">
+                    <a href="{% url 'account:login' %}" class="small text-muted">Cancel &bull; Standard Sign In</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 {% endblock %}
-

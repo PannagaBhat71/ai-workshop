@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: scemquiz-arena
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn mysite.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: GROQ_MODEL
+        value: "qwen/qwen3.8-27b"
+      - key: GROQ_API_KEY
+        sync: false
